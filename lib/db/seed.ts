@@ -1,11 +1,12 @@
 import * as dotenv from "dotenv";
+
+dotenv.config({ path: ".env.local" });
+
 import { aloeIce } from "./blog/aloe-ice";
 import { gilmored } from "./blog/gilmored";
 import { nosiBalasi } from "./blog/nosibalasi";
 import { db } from "./index";
 import { admin, categories, posts, postTags, tags } from "./schema";
-
-dotenv.config({ path: ".env.local" });
 
 async function main() {
 	console.log("Starting database seeding process...");
@@ -40,7 +41,7 @@ async function main() {
 			{
 				name: "Products Review",
 				slug: "products-review",
-			},
+			},  
 		])
 		.returning({ id: categories.categoryId });
 
