@@ -77,7 +77,6 @@ export function Navbar() {
 
 			{/* utility icons adaptive layout */}
 			<div className="flex items-center space-x-4 md:space-x-6">
-				{/* fixed: added explicit type="button" attributes to clear biome lint warnings */}
 				<button
 					type="button"
 					className="text-zinc-400 hover:text-white transition"

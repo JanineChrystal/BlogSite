@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
-import Footer from "../components/layout/footer";
-import Navbar from "../components/layout/nav";
-import PanelAssistant from "../components/layout/panel-assistant";
+import Footer from "./public/components/layout/footer";
+import { Navbar } from "./public/components/layout/nav";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -23,7 +22,6 @@ export default function RootLayout({
 			<body className="relative min-h-screen flex flex-col m-0 p-0">
 				<Navbar />
 				<main className="w-full grow">{children}</main>
-				<PanelAssistant />
 				<Footer />
 			</body>
 		</html>

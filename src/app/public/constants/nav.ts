@@ -1,9 +1,10 @@
 export const NAV_CONFIG = {
-	links: [{ label: "Home", path: "/" }],
+	links: [{ label: "Home", path: "/home" }],
 	categories: [
 		{ name: "All Categories", slug: "all" },
-		{ name: "Tula & Creative Writing", slug: "creative-writing" },
-		{ name: "Entertainment & Reviews", slug: "entertainment" },
+		{ name: "Creative Writing", slug: "creative-writing" },
+		{ name: "Entertainment", slug: "entertainment" },
+		{ name: "Travel and LifeStyle", slug: "travel-lifestyle" },
 		{ name: "Product Reviews", slug: "products-review" },
 	],
 } as const;

@@ -30,7 +30,8 @@ export function PostCard({
 					<Image
 						src={imageUrl}
 						alt={title}
-						className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100"
+						fill
+						className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100"
 					/>
 				</div>
 
