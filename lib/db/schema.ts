@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { defineRelations } from "drizzle-orm"; // Using the correct v2 function
 import {
 	boolean,
 	integer,
@@ -10,7 +10,7 @@ import {
 	varchar,
 } from "drizzle-orm/pg-core";
 
-// Tables
+// Admin Table
 export const admin = pgTable("admin_table", {
 	userId: uuid("user_id").primaryKey().defaultRandom().notNull(),
 	userName: varchar("username", { length: 50 }),
@@ -19,16 +19,17 @@ export const admin = pgTable("admin_table", {
 	accentColor: varchar("accent_color", { length: 20 }),
 });
 
+// Categories Table
 export const categories = pgTable("categories_table", {
 	categoryId: uuid("category_id").primaryKey().defaultRandom(),
 	name: varchar("name", { length: 100 }).notNull(),
 	slug: varchar("slug", { length: 100 }).notNull().unique(),
 });
 
+// Posts Table
 export const posts = pgTable("posts_table", {
 	id: uuid("post_id").primaryKey().defaultRandom(),
 
-	// Foreign Keys
 	userId: uuid("user_id")
 		.references(() => admin.userId)
 		.notNull(),
@@ -54,15 +55,14 @@ export const posts = pgTable("posts_table", {
 	updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Comments Table
 export const comments = pgTable("comments_table", {
 	id: uuid("comment_id").primaryKey().defaultRandom(),
 
-	// cascading delete ensuring comments are removed if the parent post is deleted
 	postId: uuid("post_id")
 		.references(() => posts.id, { onDelete: "cascade" })
 		.notNull(),
 
-	// self referencing column for threaded replies
 	parentId: uuid("parent_id"),
 	authorName: varchar("author_name", { length: 80 }).notNull(),
 	body: text("body").notNull(),
@@ -71,85 +71,70 @@ export const comments = pgTable("comments_table", {
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Tags Table
 export const tags = pgTable("tags_table", {
 	tagId: uuid("tag_id").primaryKey().defaultRandom(),
 	name: varchar("name", { length: 255 }).notNull(),
 	slug: varchar("slug", { length: 50 }).notNull().unique(),
 });
 
+// Post-Tag Connection Table
 export const postTags = pgTable(
 	"post_tags_table",
 	{
-		// foreign key linking to the posts table
 		postId: uuid("post_id")
 			.references(() => posts.id, { onDelete: "cascade" })
 			.notNull(),
-
-		// foreign key linking to the tags table
 		tagId: uuid("tag_id")
 			.references(() => tags.tagId, { onDelete: "cascade" })
 			.notNull(),
-
-		// standard varchar column for the slug constraint
 		slug: varchar("slug", { length: 50 }).notNull(),
 	},
-	// the extra configuration callback returning an array
-	(table) => [
-		// a composite primary key to ensure exact unique pairings
-		primaryKey({ columns: [table.postId, table.tagId] }),
-	],
+	(table) => [primaryKey({ columns: [table.postId, table.tagId] })],
 );
 
-// Connections / Relationships
-
-export const postsRelations = relations(posts, ({ one, many }) => ({
-	category: one(categories, {
-		fields: [posts.categoryId],
-		references: [categories.categoryId],
+// V2 RELATIONS GRAPH
+export const relations = defineRelations(
+	{ posts, categories, admin, comments, tags, postTags },
+	(r) => ({
+		posts: {
+			category: r.one.categories({
+				from: r.posts.categoryId,
+				to: r.categories.categoryId,
+			}),
+			author: r.one.admin({
+				from: r.posts.userId,
+				to: r.admin.userId,
+			}),
+			comments: r.many.comments(),
+			postTags: r.many.postTags(),
+		},
+		comments: {
+			post: r.one.posts({
+				from: r.comments.postId,
+				to: r.posts.id,
+			}),
+			parentComment: r.one.comments({
+				from: r.comments.parentId,
+				to: r.comments.id,
+				alias: "comment_threads",
+			}),
+			replies: r.many.comments({
+				alias: "comment_threads",
+			}),
+		},
+		tags: {
+			postTags: r.many.postTags(),
+		},
+		postTags: {
+			post: r.one.posts({
+				from: r.postTags.postId,
+				to: r.posts.id,
+			}),
+			tag: r.one.tags({
+				from: r.postTags.tagId,
+				to: r.tags.tagId,
+			}),
+		},
 	}),
-
-	author: one(admin, {
-		fields: [posts.userId],
-		references: [admin.userId],
-	}),
-
-	comments: many(comments),
-	postTags: many(postTags),
-}));
-
-export const commentsRelations = relations(comments, ({ one, many }) => ({
-	// links the comment to the main blog post
-	post: one(posts, {
-		fields: [comments.postId],
-		references: [posts.id],
-	}),
-
-	// links a nested reply to its direct parent comment
-	parentComment: one(comments, {
-		fields: [comments.parentId],
-		references: [comments.id],
-		// uses a relation name string to prevent self referencing confusion
-		relationName: "comment_threads",
-	}),
-
-	// links parent comment to all of its nested replies
-	replies: many(comments, {
-		// matches the exact relation name string used in the parent link
-		relationName: "comment_threads",
-	}),
-}));
-
-export const tagsRelations = relations(tags, ({ many }) => ({
-	postTags: many(postTags),
-}));
-
-export const postTagsRelations = relations(postTags, ({ one }) => ({
-	post: one(posts, {
-		fields: [postTags.postId],
-		references: [posts.id],
-	}),
-	tag: one(tags, {
-		fields: [postTags.tagId],
-		references: [tags.tagId],
-	}),
-}));
+);

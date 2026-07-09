@@ -11,14 +11,13 @@
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
-		"db:seed": "tsx lib/db/seed.ts"	
+		"db:seed": "tsx lib/db/seed.ts"
 	},
 	"dependencies": {
 		"@base-ui/react": "^1.6.0",
 		"@neondatabase/serverless": "^1.1.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
-		"drizzle-orm": "^0.45.2",
 		"lucide-react": "^1.23.0",
 		"next": "16.2.10",
 		"react": "19.2.4",
@@ -36,7 +35,8 @@
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
 		"dotenv": "^17.4.2",
-		"drizzle-kit": "^0.31.10",
+		"drizzle-kit": "1.0.0-rc.4",
+		"drizzle-orm": "1.0.0-rc.4",
 		"eslint": "^9",
 		"eslint-config-next": "16.2.10",
 		"tailwindcss": "^4",
