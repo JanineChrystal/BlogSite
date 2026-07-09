@@ -41,7 +41,7 @@ async function main() {
 			{
 				name: "Products Review",
 				slug: "products-review",
-			},  
+			},
 		])
 		.returning({ id: categories.categoryId });
 
