@@ -7,7 +7,7 @@ const Footer = (): React.ReactElement => {
 	return (
 		<footer
 			id="site-footer"
-			className="z-40 bg-background w-full flex flex-col sm:flex-row items-center justify-between py-4 px-12 border-t border-foreground/10 mt-auto"
+			className="z-40 bg-transparent w-full flex flex-col sm:flex-row items-center justify-between py-2 px-12 border-t border-foreground/10 mt-auto"
 		>
 			{" "}
 			{/* Left branding layout*/}

@@ -8,3 +8,5 @@ export const NAV_CONFIG = {
 		{ name: "Product Reviews", slug: "products-review" },
 	],
 } as const;
+
+export const Categories = {};

@@ -46,7 +46,7 @@ export function HeroSection() {
 							buttonVariants({ variant: "default" }),
 							"bg-red-600 hover:bg-red-700 text-white font-bold rounded-none px-8 py-6 flex items-center justify-center",
 						)}
-					>	
+					>
 						READ POST
 					</Link>
 				</div>
