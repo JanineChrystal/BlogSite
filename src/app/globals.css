@@ -176,6 +176,51 @@
 	--text-label-sm--font-weight: 700;
 }
 
+@keyframes glow-water {
+	0% {
+		box-shadow: 0 0 0 0 rgba(0, 114, 215, 0.7);
+	}
+	70% {
+		box-shadow: 0 0 20px 10px rgba(0, 114, 215, 0);
+	}
+	100% {
+		box-shadow: 0 0 0 0 rgba(0, 114, 215, 0);
+	}
+}
+@keyframes glow-fire {
+	0% {
+		box-shadow: 0 0 0 0 rgba(229, 9, 20, 0.7);
+	}
+	70% {
+		box-shadow: 0 0 20px 10px rgba(229, 9, 20, 0);
+	}
+	100% {
+		box-shadow: 0 0 0 0 rgba(229, 9, 20, 0);
+	}
+}
+@keyframes glow-earth {
+	0% {
+		box-shadow: 0 0 0 0 rgba(167, 200, 255, 0.7);
+	}
+	70% {
+		box-shadow: 0 0 20px 10px rgba(167, 200, 255, 0);
+	}
+	100% {
+		box-shadow: 0 0 0 0 rgba(167, 200, 255, 0);
+	}
+}
+@keyframes glow-air {
+	0% {
+		box-shadow: 0 0 0 0 rgba(226, 226, 226, 0.7);
+	}
+	70% {
+		box-shadow: 0 0 20px 10px rgba(226, 226, 226, 0);
+	}
+	100% {
+		box-shadow: 0 0 0 0 rgba(226, 226, 226, 0);
+	}
+}
+
 @layer base {
 	* {
 		@apply border-border outline-ring/50;

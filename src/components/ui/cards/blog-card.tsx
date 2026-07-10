@@ -2,7 +2,7 @@ import { Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Post } from "@/lib/types/post";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 interface BlogCardProps {
 	post: Post;
