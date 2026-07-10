@@ -3,7 +3,7 @@
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { InputGroupDemo } from "@/src/components/ui/search/search";
 import {
 	Select,
@@ -20,6 +20,25 @@ export function Navbar() {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
+	const [isScrolled, setIsScrolled] = useState(false);
+
+	useEffect(() => {
+		const handleScroll = () => {
+			if (window.scrollY > 50) {
+				setIsScrolled(true);
+			} else {
+				setIsScrolled(false);
+			}
+		};
+
+		window.addEventListener("scroll", handleScroll);
+
+		// Cleanup function to prevent memory leaks when navigating away
+		return () => {
+			window.removeEventListener("scroll", handleScroll);
+		};
+	}, []);
+
 	const handleCategoryChange = (slug: string | null) => {
 		if (!slug) return;
 
@@ -33,7 +52,13 @@ export function Navbar() {
 	};
 
 	return (
-		<nav className="flex items-center justify-between px-4 md:px-8 py-2 md:py-4 bg-black text-white border-b border-zinc-800">
+		<nav
+			className={`flex w-full justify-between px-4 md:px-8 py-2 md:py-4 fixed top-0 z-50 transition-all duration-500 ease-in-out text-white border-b ${
+				isScrolled
+					? "bg-black border-zinc-800"
+					: "bg-black/0 backdrop-blur-md border-transparent"
+			}`}
+		>
 			{/* Brand logo automatically pointing to the homepage route */}
 			<Link
 				href="/"
