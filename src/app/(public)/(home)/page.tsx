@@ -29,7 +29,18 @@ const HomePage = async () => {
 
 	return (
 		<div className="w-full block">
-			<HeroSection />
+			<HeroSection
+				backgroundImage="/posts/aloe.png"
+				backgroundAlt="The Art of Stillness"
+				title={
+					<>
+						The Art of <br className="hidden md:block" /> Stillness
+					</>
+				}
+				description="A deep dive into meditative photography and finding quiet moments in a chaotic urban landscape. An exclusive visual essay."
+				tags={["Photography", "Editorial"]}
+				actions={[{ label: "READ POST", href: "/post/art-of-stillness" }]}
+			/>
 
 			{/* Now we are passing all the required props to satisfy TypeScript */}
 			<CategorySection
