@@ -1,7 +1,7 @@
 export const NAV_CONFIG = {
-	links: [{ label: "Home", path: "/home" }],
+	links: [],
 	categories: [
-		{ name: "All Categories", slug: "all" },
+		{ name: "All Categories", slug: "all-categories" },
 		{ name: "Creative Writing", slug: "creative-writing" },
 		{ name: "Entertainment", slug: "entertainment" },
 		{ name: "Travel and LifeStyle", slug: "travel-lifestyle" },
