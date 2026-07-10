@@ -45,7 +45,12 @@ export function CategoryToolbar({
 				<span className="text-primary-container">{categoryName}</span>
 			</nav>
 
-			<Select onValueChange={onFilterChange} defaultValue="newest">
+			<Select
+				onValueChange={(value) => {
+					if (value) onFilterChange?.(value);
+				}}
+				defaultValue="newest"
+			>
 				<SelectTrigger className="rounded-lg border-outline-variant bg-transparent text-on-surface hover:bg-surface-container-high">
 					<SlidersHorizontal className="size-3.5" />
 					<SelectValue placeholder="Filter" />

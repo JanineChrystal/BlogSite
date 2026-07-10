@@ -4,12 +4,12 @@ import Link from "next/link";
 import type { Post } from "@/lib/types/post";
 import { cn } from "@/lib/utils";
 
-interface ArticleCardProps {
+interface BlogCardProps {
 	post: Post;
 	className?: string;
 }
 
-export function ArticleCard({ post, className }: ArticleCardProps) {
+export function BlogCard({ post, className }: BlogCardProps) {
 	return (
 		<Link
 			href={`/post/${post.slug}`}
