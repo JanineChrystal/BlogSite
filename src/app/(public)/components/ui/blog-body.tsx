@@ -4,11 +4,11 @@ import { HeadingBlock } from "./heading-block";
 import { ParagraphBlock } from "./paragraph-block";
 import { QuoteBlock } from "./quote-block";
 
-interface ArticleBodyProps {
+interface BlogBodyProps {
 	blocks: ContentBlock[];
 }
 
-export function ArticleBody({ blocks }: ArticleBodyProps) {
+export function BlogBody({ blocks }: BlogBodyProps) {
 	return (
 		<div className="space-y-8">
 			{blocks.map((block) => {

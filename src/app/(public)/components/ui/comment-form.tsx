@@ -1,10 +1,11 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import type React from "react";
+import { useState } from "react";
+import { cn } from "@/lib/utils/utils";
 import { Button } from "@/src/components/ui/buttons/button";
 import { Input } from "@/src/components/ui/input-group/input";
 import { Textarea } from "@/src/components/ui/input-group/textarea";
-import { cn } from "@/lib/utils/utils";
 
 interface CommentFormProps {
 	onSubmit?: (data: { name: string; content: string }) => void;
@@ -17,7 +18,7 @@ export function CommentForm({ onSubmit }: CommentFormProps) {
 	const [name, setName] = useState("");
 	const [content, setContent] = useState("");
 
-	function handleSubmit(e: FormEvent) {
+	function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		if (!name.trim() || !content.trim()) return;
 		onSubmit?.({ name, content }); // TODO: POST to comments API once available

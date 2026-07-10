@@ -1,6 +1,6 @@
 import { User } from "lucide-react";
-import { cn } from "@/lib/utils/utils";
 import type { Comment } from "@/lib/types/post";
+import { cn } from "@/lib/utils/utils";
 
 interface CommentThreadProps {
 	comment: Comment;
@@ -37,7 +37,7 @@ export function CommentThread({ comment, depth = 0 }: CommentThreadProps) {
 				</div>
 				<div
 					className={cn(
-						"flex-grow",
+						"grow",
 						isReply &&
 							"rounded-xl border border-surface-container-high bg-surface-container p-4",
 					)}
