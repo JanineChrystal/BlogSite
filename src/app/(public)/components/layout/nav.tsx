@@ -18,7 +18,8 @@ export function Navbar() {
 	const handleCategoryChange = (slug: string | null) => {
 		if (!slug) return;
 
-		if (slug === "all") {
+		// Corrected to match the actual slug from NAV_CONFIG
+		if (slug === "all-categories") {
 			router.push("/");
 		} else {
 			router.push(`/blog/${slug}`);
@@ -39,7 +40,7 @@ export function Navbar() {
 			<div className="hidden md:flex items-center space-x-8">
 				{/* shadcn select configuration mapping */}
 				<Select
-					defaultValue="All Categories"
+					defaultValue="all-categories"
 					onValueChange={handleCategoryChange}
 				>
 					<SelectTrigger className="w-55 bg-transparent border-none text-zinc-300 font-semibold uppercase tracking-wider focus:ring-0 shadow-none hover:text-white transition">

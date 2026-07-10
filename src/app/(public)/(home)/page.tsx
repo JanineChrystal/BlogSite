@@ -1,5 +1,5 @@
-import { CategorySection } from "./public/components/sections/category";
-import { HeroSection } from "./public/components/sections/hero";
+import { CategorySection } from "../components/sections/category";
+import { HeroSection } from "../components/sections/hero";
 
 const HomePage = async () => {
 	// Temporary mock data.
