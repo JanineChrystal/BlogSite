@@ -1,6 +1,6 @@
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/buttons/button";
 import { cn } from "@/lib/utils/utils";
-import { buttonVariants } from "@/src/components/ui/buttons/button";
 
 interface CalloutBlockProps {
 	title: string;

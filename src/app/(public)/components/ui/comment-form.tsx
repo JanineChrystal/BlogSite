@@ -2,10 +2,10 @@
 
 import type React from "react";
 import { useState } from "react";
+import { Button } from "@/components/ui/buttons/button";
+import { Input } from "@/components/ui/input-group/input";
+import { Textarea } from "@/components/ui/input-group/textarea";
 import { cn } from "@/lib/utils/utils";
-import { Button } from "@/src/components/ui/buttons/button";
-import { Input } from "@/src/components/ui/input-group/input";
-import { Textarea } from "@/src/components/ui/input-group/textarea";
 
 interface CommentFormProps {
 	onSubmit?: (data: { name: string; content: string }) => void;
