@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/buttons/button";
@@ -6,6 +7,7 @@ import { cn } from "@/lib/utils/utils";
 export interface HeroAction {
 	label: string;
 	href: string;
+	icon?: LucideIcon;
 }
 
 export interface HeroBadge {
@@ -60,16 +62,15 @@ export function HeroSection({
 }: HeroSectionProps) {
 	const isCategory = variant === "category";
 	const isPost = variant === "post";
+	const isFeature = variant === "feature";
 
 	return (
 		<section
 			className={cn(
 				"relative w-full flex px-4 md:px-8 py-12 md:py-16 bg-black",
-				isPost
-					? "h-179 min-h-150 flex-col justify-end"
-					: "min-h-[60vh] md:min-h-[80vh]",
-				isCategory && "justify-center",
-				!isCategory && !isPost && "items-center",
+				isPost && "h-179 min-h-150 flex-col justify-end",
+				isFeature && "min-h-[max(85vh,600px)] items-center",
+				isCategory && "min-h-[60vh] md:min-h-[80vh] justify-center",
 			)}
 		>
 			<div className="absolute inset-0 z-0">
@@ -146,7 +147,7 @@ export function HeroSection({
 						{tags.map((tag) => (
 							<span
 								key={tag}
-								className="rounded-full border border-zinc-600 px-3 py-1 text-[10px] font-semibold md:px-4 md:text-xs"
+								className="rounded-full border border-outline-variant px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-secondary md:px-4 md:text-xs"
 							>
 								{tag}
 							</span>
@@ -161,18 +162,22 @@ export function HeroSection({
 							isCategory && "justify-center",
 						)}
 					>
-						{actions.map((action) => (
-							<Link
-								key={action.href}
-								href={action.href}
-								className={cn(
-									buttonVariants({ variant: "default" }),
-									"h-auto rounded-lg bg-primary-container px-8 py-4 font-bold uppercase tracking-wide text-on-primary-container hover:bg-inverse-primary md:py-6",
-								)}
-							>
-								{action.label}
-							</Link>
-						))}
+						{actions.map((action) => {
+							const Icon = action.icon;
+							return (
+								<Link
+									key={action.href}
+									href={action.href}
+									className={cn(
+										buttonVariants({ variant: "default" }),
+										"h-auto flex items-center justify-center gap-2 rounded-lg bg-primary-container px-8 py-4 font-bold uppercase tracking-wide text-on-primary-container hover:bg-inverse-primary md:py-6",
+									)}
+								>
+									{Icon && <Icon className="size-4" fill="currentColor" />}
+									{action.label}
+								</Link>
+							);
+						})}
 					</div>
 				)}
 			</div>

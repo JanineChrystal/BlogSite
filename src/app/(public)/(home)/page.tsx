@@ -1,54 +1,59 @@
+import { Play } from "lucide-react";
+import {
+	getLatestPost,
+	getPopularCreativeWriting,
+	getPopularEntertainment,
+	getPopularProductReviews,
+	getWhatsNew,
+} from "@/lib/data";
+import { getHomeSections } from "@/lib/types/home";
 import { CategorySection } from "../components/sections/category";
 import { HeroSection } from "../components/sections/hero";
 
 const HomePage = async () => {
-	// Temporary mock data.
-	const trendingReviews = [
-		{
-			id: "1",
-			title: "The Minimalist's Phone",
-			categoryLabel: "Tech Review",
-			imageUrl: "/posts/aloe.png",
-			slug: "minimalist-phone",
-		},
-		{
-			id: "2",
-			title: "Typing in the Dark",
-			categoryLabel: "Workspace",
-			imageUrl: "/posts/gg.png",
-			slug: "typing-in-the-dark",
-		},
-		{
-			id: "3",
-			title: "Soundscapes",
-			categoryLabel: "Audio Gear",
-			imageUrl: "/posts/nosibalasi.png",
-			slug: "soundscapes",
-		},
-	];
+	// Fetch data for all sections in parallel using the Drizzle ORM functions.
+	const [
+		latestPost,
+		whatsNew,
+		popularCreativeWriting,
+		popularEntertainment,
+		popularProductReviews,
+	] = await Promise.all([
+		getLatestPost(),
+		getWhatsNew(),
+		getPopularCreativeWriting(),
+		getPopularEntertainment(),
+		getPopularProductReviews(),
+	]);
+
+	const homeSections = getHomeSections({
+		whatsNew,
+		popularCreativeWriting,
+		popularEntertainment,
+		popularProductReviews,
+	});
 
 	return (
 		<div className="w-full block">
-			<HeroSection
-				backgroundImage="/posts/aloe.png"
-				backgroundAlt="The Art of Stillness"
-				title={
-					<>
-						The Art of <br className="hidden md:block" /> Stillness
-					</>
-				}
-				description="A deep dive into meditative photography and finding quiet moments in a chaotic urban landscape. An exclusive visual essay."
-				tags={["Photography", "Editorial"]}
-				actions={[{ label: "READ POST", href: "/post/art-of-stillness" }]}
-			/>
+			{latestPost && (
+				<HeroSection
+					backgroundImage={latestPost.imageUrl}
+					backgroundAlt={latestPost.title}
+					title={latestPost.title}
+					tags={latestPost.category.name ? [latestPost.category.name] : []}
+					actions={[
+						{
+							label: "Read Post",
+							href: `/post/${latestPost.slug}`,
+							icon: Play,
+						},
+					]}
+				/>
+			)}
 
-			{/* Now we are passing all the required props to satisfy TypeScript */}
-			<CategorySection
-				title="Trending Reviews"
-				categorySlug="products-review"
-				posts={trendingReviews}
-				cardOrientation="landscape"
-			/>
+			{homeSections.map((section) => (
+				<CategorySection key={section.id} {...section} />
+			))}
 		</div>
 	);
 };

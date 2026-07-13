@@ -1,13 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
+import { cn } from "@/lib/utils/utils";
 import { Card, CardContent } from "./card";
 
 interface PostCardProps {
 	title: string;
-	categoryLabel?: string;
+	categoryLabel?: string | null;
 	imageUrl: string;
 	postSlug: string;
 	orientation?: "landscape" | "portrait";
+	captionEmphasis?: "bold" | "medium";
+	className?: string;
 }
 
 export function PostCard({
@@ -16,32 +19,40 @@ export function PostCard({
 	imageUrl,
 	postSlug,
 	orientation = "landscape",
+	captionEmphasis = "bold",
+	className,
 }: PostCardProps) {
-	// define responsive aspect ratios based on orientation prop
 	const aspectClass =
-		orientation === "landscape"
-			? "aspect-[4/3] md:aspect-video"
-			: "aspect-square md:aspect-[3/4]";
+		orientation === "landscape" ? "aspect-video" : "aspect-[2/3]";
 
 	return (
-		<Link href={`/post/${postSlug}`} className="group block h-full">
-			<Card className="relative overflow-hidden border-none bg-zinc-900 h-full rounded-md">
-				<div className={`w-full ${aspectClass}`}>
+		<Link
+			href={`/category/${postSlug}`}
+			className={cn("group block h-full", className)}
+		>
+			<Card className="relative h-full overflow-hidden rounded-lg border-none bg-surface">
+				<div className={cn("w-full", aspectClass)}>
 					<Image
 						src={imageUrl}
 						alt={title}
 						fill
-						className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100"
+						className="object-cover opacity-80 transition-transform duration-500 group-hover:scale-105 group-hover:opacity-100"
 					/>
 				</div>
 
-				{/* gradient overlay for text readability */}
-				<CardContent className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent p-4 md:p-6 flex flex-col justify-end border-none">
-					<h3 className="text-white font-bold text-base md:text-lg leading-tight mb-1">
+				<CardContent className="absolute inset-0 flex flex-col justify-end border-none bg-linear-to-t from-black/90 via-black/20 to-transparent p-4">
+					<h3
+						className={cn(
+							"leading-tight text-white",
+							captionEmphasis === "bold"
+								? "mb-1 font-heading text-base font-bold md:text-lg"
+								: "font-body text-sm font-medium",
+						)}
+					>
 						{title}
 					</h3>
 					{categoryLabel && (
-						<span className="text-red-500 text-[10px] md:text-xs font-semibold uppercase tracking-wider">
+						<span className="font-heading text-[10px] uppercase tracking-wider text-primary-container md:text-xs">
 							{categoryLabel}
 						</span>
 					)}

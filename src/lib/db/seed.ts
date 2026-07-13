@@ -2,9 +2,9 @@ import * as dotenv from "dotenv";
 
 dotenv.config({ path: ".env.local" });
 
-import { aloeIce } from "./blog/aloe-ice";
-import { gilmored } from "./blog/gilmored";
-import { nosiBalasi } from "./blog/nosibalasi";
+import { aloeIce } from "../data/blog/aloe-ice";
+import { gilmored } from "../data/blog/gilmored";
+import { nosiBalasi } from "../data/blog/nosibalasi";
 import { db } from "./index";
 import { admin, categories, posts, postTags, tags } from "./schema";
 
