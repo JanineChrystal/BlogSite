@@ -4,14 +4,14 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { InputGroupDemo } from "@/src/components/ui/search/search";
+import { InputGroupDemo } from "@/components/ui/search/search";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/src/components/ui/select";
+} from "@/components/ui/select";
 import { NAV_CONFIG } from "../../constants/nav";
 
 export function Navbar() {

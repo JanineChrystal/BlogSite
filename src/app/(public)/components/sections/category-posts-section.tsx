@@ -1,5 +1,5 @@
+import { LoadMoreButton } from "@/components/ui/buttons/load-more-button";
 import type { Post } from "@/lib/types/post";
-import { LoadMoreButton } from "@/src/components/ui/buttons/load-more-button";
 import { BlogGrid } from "./blog-grid";
 import { CategoryToolbar } from "./category-toolbar";
 

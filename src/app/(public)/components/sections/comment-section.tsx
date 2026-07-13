@@ -2,9 +2,9 @@
 
 import { MessageSquare } from "lucide-react";
 import { useState } from "react";
+import { CommentForm } from "@/app/(public)/components/ui/comment-form";
+import { CommentThread } from "@/app/(public)/components/ui/comment-thread";
 import type { Comment } from "@/lib/types/post";
-import { CommentForm } from "@/src/app/(public)/components/ui/comment-form";
-import { CommentThread } from "@/src/app/(public)/components/ui/comment-thread";
 
 interface CommentsSectionProps {
 	initialComments: Comment[];

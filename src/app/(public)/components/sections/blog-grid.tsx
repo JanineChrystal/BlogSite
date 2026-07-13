@@ -1,5 +1,5 @@
+import { BlogCard } from "@/components/ui/cards/blog-card";
 import type { Post } from "@/lib/types/post";
-import { BlogCard } from "@/src/components/ui/cards/blog-card";
 
 interface BlogGridProps {
 	posts: Post[];

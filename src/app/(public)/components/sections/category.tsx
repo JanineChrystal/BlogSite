@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PostCard } from "@/src/components/ui/cards/postCard";
+import { PostCard } from "@/components/ui/cards/postCard";
 
 interface Post {
 	id: string;
