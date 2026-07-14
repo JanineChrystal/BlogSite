@@ -12,11 +12,11 @@ if (!databaseUrl) {
 }
 
 export default defineConfig({
-	// Point the CLI directly to your custom schema file location
-	schema: "./lib/db/schema.ts",
-
 	// Set the target output directory for your SQL migration assets
 	out: "./drizzle",
+
+	// Point the CLI directly to custom schema file location
+	schema: "./src/lib/db/schema.ts",
 
 	// Define the database engine dialect
 	dialect: "postgresql",
@@ -24,5 +24,9 @@ export default defineConfig({
 	dbCredentials: {
 		// Pass the verified connection string
 		url: databaseUrl,
+	},
+	migrations: {
+		schema: "public",
+		table: "__drizzle_migrations",
 	},
 });

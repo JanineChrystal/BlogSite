@@ -92,7 +92,7 @@ export async function getPopularProductReviews() {
 		})
 		.from(posts)
 		.leftJoin(categories, eq(posts.categoryId, categories.categoryId))
-		.where(eq(categories.slug, "products-review"))
+		.where(eq(categories.slug, "product-reviews"))
 		// TODO: Replace with ordering by reaction/view count once the schema supports it.
 		.orderBy(desc(posts.createdAt))
 		.limit(5);

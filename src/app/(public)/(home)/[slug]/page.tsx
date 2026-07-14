@@ -5,7 +5,7 @@ import { HeroSection } from "../../components/sections/hero";
 
 interface CategoryPageProps {
 	params: Promise<{ slug: string }>;
-	searchParams: { [key: string]: string | string[] | undefined };
+	searchParams: Promise<{ sort?: string }>;
 }
 
 export default async function CategoryPage({
@@ -13,8 +13,9 @@ export default async function CategoryPage({
 	searchParams,
 }: CategoryPageProps) {
 	const { slug } = await params;
-	const sort =
-		typeof searchParams.sort === "string" ? searchParams.sort : "newest";
+	const { sort } = await searchParams;
+
+	const sortValue = typeof sort === "string" ? sort : "newest";
 
 	// Fetch category details and posts in parallel
 	const [category, paginatedPosts] = await Promise.all([

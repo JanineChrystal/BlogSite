@@ -7,7 +7,7 @@ export const CATEGORY_METADATA: Record<string, { description: string }> = {
 		description:
 			"A space for imagination to run wild. Explore poetry, short stories, and other flights of fancy.",
 	},
-	"products-review": {
+	"product-reviews": {
 		description:
 			"Honest, in-depth reviews to help you make informed decisions. From tech gadgets to everyday essentials.",
 	},

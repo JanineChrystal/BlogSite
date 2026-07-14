@@ -88,7 +88,7 @@ export const postTags = pgTable(
 		tagId: uuid("tag_id")
 			.references(() => tags.tagId, { onDelete: "cascade" })
 			.notNull(),
-		slug: varchar("slug", { length: 50 }).notNull(),
+		slug: varchar("slug", { length: 50 }).unique().notNull(),
 	},
 	(table) => ({ pk: primaryKey({ columns: [table.postId, table.tagId] }) }),
 );

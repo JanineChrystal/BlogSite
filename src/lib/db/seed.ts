@@ -11,73 +11,93 @@ import { admin, categories, posts, postTags, tags } from "./schema";
 async function main() {
 	console.log("Starting database seeding process...");
 
-	// initial admin account
-	const insertedAdmin = await db
+	const adminUsername = process.env.ADMIN_USERNAME;
+	const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH;
+
+	// Validates that environment variables exist before proceeding
+	if (!adminUsername || !adminPasswordHash) {
+		throw new Error(
+			"Missing required ADMIN_USERNAME or ADMIN_PASSWORD_HASH in .env.local",
+		);
+	}
+
+	// Inserts admin but ignores the operation if the account already exists
+	await db
 		.insert(admin)
 		.values({
-			userName: "NinejaChrys",
-			passwordHash: "temporaryp4ssw_hash!",
-			themeMode: "dark",
-			accentColor: "zinc",
+			userName: adminUsername,
+			passwordHash: adminPasswordHash,
+			themeMode: process.env.ADMIN_THEME_MODE || "dark",
+			accentColor: process.env.ADMIN_ACCENT_COLOR || "zinc",
 		})
-		.returning({ id: admin.userId });
+		.onConflictDoNothing();
 
-	const adminId = insertedAdmin[0].id;
+	// Retrieves the admin record to securely get the ID for relationships
+	const adminRecords = await db.select().from(admin);
 
-	console.log("Admin account created.");
+	// Safely validates the admin record was found
+	if (adminRecords.length === 0) {
+		throw new Error("Admin record not found in the database.");
+	}
 
-	// Categories
-	const insertedCategories = await db
+	const adminId = adminRecords[0].userId;
+
+	console.log("Admin account verified.");
+
+	// Inserts categories but skips existing ones based on the unique slug constraint
+	await db
 		.insert(categories)
 		.values([
-			{
-				name: "Entertainment",
-				slug: "entertainment",
-			},
-			{
-				name: "Creative Writing",
-				slug: "creative-writing",
-			},
-			{
-				name: "Products Review",
-				slug: "products-review",
-			},
+			{ name: "Entertainment", slug: "entertainment" },
+			{ name: "Creative Writing", slug: "creative-writing" },
+			{ name: "Products Review", slug: "product-reviews" },
 		])
-		.returning({ id: categories.categoryId });
+		.onConflictDoNothing({ target: categories.slug });
 
-	console.log("Categories populated successfully!");
+	// Fetches all categories to map their IDs correctly
+	const allCategories = await db.select().from(categories);
 
-	const entertainmentId = insertedCategories[0].id;
-	const creativeWritingId = insertedCategories[1].id;
-	const productsReviewId = insertedCategories[2].id;
+	// Helper function to safely find category IDs without using non-null assertions
+	const getCategoryId = (slug: string) => {
+		const category = allCategories.find((c) => c.slug === slug);
+		if (!category) throw new Error(`Category ${slug} not found`);
+		return category.categoryId;
+	};
 
-	// Tags
-	const insertedTags = await db
+	const entertainmentId = getCategoryId("entertainment");
+	const creativeWritingId = getCategoryId("creative-writing");
+	const productsReviewId = getCategoryId("product-reviews");
+
+	console.log("Categories verified!");
+
+	// Inserts tags safely by ignoring slug conflicts
+	await db
 		.insert(tags)
 		.values([
-			{
-				name: "Series",
-				slug: "series",
-			},
-			{
-				name: "Tagalog Poetry",
-				slug: "tagalog-poetry",
-			},
-			{
-				name: "Skincare",
-				slug: "skincare",
-			},
+			{ name: "Series", slug: "series" },
+			{ name: "Tagalog Poetry", slug: "tagalog-poetry" },
+			{ name: "Skincare", slug: "skincare" },
 		])
-		.returning({ id: tags.tagId });
+		.onConflictDoNothing({ target: tags.slug });
 
-	console.log("Tags populated successfully!");
+	// Fetches all tags to grab their IDs for the connection table
+	const allTags = await db.select().from(tags);
 
-	const seriesId = insertedTags[0].id;
-	const tagalogPoetryId = insertedTags[1].id;
-	const skincareId = insertedTags[2].id;
+	// Helper function to safely find tag IDs
+	const getTagId = (slug: string) => {
+		const tag = allTags.find((t) => t.slug === slug);
+		if (!tag) throw new Error(`Tag ${slug} not found`);
+		return tag.tagId;
+	};
 
-	// Posts
-	const insertedPosts = await db
+	const seriesId = getTagId("series");
+	const tagalogPoetryId = getTagId("tagalog-poetry");
+	const skincareId = getTagId("skincare");
+
+	console.log("Tags verified!");
+
+	// Inserts blog posts and skips if the post slug already exists
+	await db
 		.insert(posts)
 		.values([
 			{
@@ -109,30 +129,43 @@ async function main() {
 				featuredLink: "https://s.shopee.ph/3LP5At1h6m",
 			},
 		])
-		.returning({ id: posts.id });
+		.onConflictDoNothing({ target: posts.slug });
 
-	const gilmoreGirlsId = insertedPosts[0].id;
-	const nosiBalasiId = insertedPosts[1].id;
-	const aloeIceId = insertedPosts[2].id;
+	// Fetches the posts to get their internal IDs
+	const allPosts = await db.select().from(posts);
 
-	// Post-tag connection
-	await db.insert(postTags).values([
-		{
-			postId: gilmoreGirlsId,
-			tagId: seriesId,
-			slug: "gilmore-girls-series",
-		},
-		{
-			postId: nosiBalasiId,
-			tagId: tagalogPoetryId,
-			slug: "nosi-ba-lasi-poetry",
-		},
-		{
-			postId: aloeIceId,
-			tagId: skincareId,
-			slug: "aloe-ice-skincare",
-		},
-	]);
+	// Helper function to safely find post IDs
+	const getPostId = (slug: string) => {
+		const post = allPosts.find((p) => p.slug === slug);
+		if (!post) throw new Error(`Post ${slug} not found`);
+		return post.id;
+	};
+
+	const gilmoreGirlsId = getPostId("gilmore-girls");
+	const nosiBalasiId = getPostId("nosi-ba-lasi");
+	const aloeIceId = getPostId("fresh-skinlab-k-aloe-ice-soothing-gel");
+
+	// Maps the many-to-many relationship in the postTags table
+	await db
+		.insert(postTags)
+		.values([
+			{
+				postId: gilmoreGirlsId,
+				tagId: seriesId,
+				slug: "gilmore-girls-series",
+			},
+			{
+				postId: nosiBalasiId,
+				tagId: tagalogPoetryId,
+				slug: "nosi-ba-lasi-poetry",
+			},
+			{
+				postId: aloeIceId,
+				tagId: skincareId,
+				slug: "aloe-ice-skincare",
+			},
+		])
+		.onConflictDoNothing({ target: postTags.slug });
 
 	console.log("Database seeded successfully!");
 }
