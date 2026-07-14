@@ -40,7 +40,11 @@ export default async function PostPage({ params }: PostPageProps) {
 				/>
 				<article className="mx-auto mt-10 max-w-3xl md:px-0">
 					<BlogBody blocks={post.content} />
-					<ReactionPanel reactions={post.reactions} />
+					<ReactionPanel
+						reactions={post.reactions}
+						postId={post.id}
+						slug={slug}
+					/>
 					<CommentsSection
 						initialComments={post.comments}
 						commentCount={post.commentCount}

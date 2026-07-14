@@ -34,6 +34,7 @@ export async function addComment(
 			parentId: result.data.parentId,
 		});
 	} catch (error) {
+		console.error("Failed to add comment:", error);
 		return {
 			errors: { _form: ["Something went wrong. Please try again."] },
 		};
