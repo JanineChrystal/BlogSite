@@ -17,7 +17,6 @@ interface Post {
 interface CategorySectionProps {
 	id: string;
 	title: string;
-	viewMoreHref: string;
 	posts: Post[];
 	cardOrientation?: "landscape" | "portrait";
 	layout?: "grid" | "carousel";
@@ -27,7 +26,6 @@ interface CategorySectionProps {
 export function CategorySection({
 	id,
 	title,
-	viewMoreHref,
 	posts,
 	cardOrientation = "landscape",
 	layout = "grid",
@@ -57,12 +55,14 @@ export function CategorySection({
 			<h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
 				{title}
 			</h2>
-			<Link
-				href={viewMoreHref}
-				className="text-xs md:text-sm font-semibold text-zinc-400 hover:text-white transition"
-			>
-				View more &rarr;
-			</Link>
+			{id !== "whats-new" && (
+				<Link
+					href={`/category/${id}`}
+					className="text-xs md:text-sm font-semibold text-zinc-400 hover:text-white transition"
+				>
+					View more &rarr;
+				</Link>
+			)}
 		</div>
 	);
 

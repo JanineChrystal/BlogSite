@@ -1,4 +1,4 @@
-import { defineRelations } from "drizzle-orm"; // Using the correct v2 function
+import { relations } from "drizzle-orm";
 import {
 	boolean,
 	integer,
@@ -93,48 +93,53 @@ export const postTags = pgTable(
 	(table) => [primaryKey({ columns: [table.postId, table.tagId] })],
 );
 
-// V2 RELATIONS GRAPH
-export const relations = defineRelations(
-	{ posts, categories, admin, comments, tags, postTags },
-	(r) => ({
-		posts: {
-			category: r.one.categories({
-				from: r.posts.categoryId,
-				to: r.categories.categoryId,
-			}),
-			author: r.one.admin({
-				from: r.posts.userId,
-				to: r.admin.userId,
-			}),
-			comments: r.many.comments(),
-			postTags: r.many.postTags(),
-		},
-		comments: {
-			post: r.one.posts({
-				from: r.comments.postId,
-				to: r.posts.id,
-			}),
-			parentComment: r.one.comments({
-				from: r.comments.parentId,
-				to: r.comments.id,
-				alias: "comment_threads",
-			}),
-			replies: r.many.comments({
-				alias: "comment_threads",
-			}),
-		},
-		tags: {
-			postTags: r.many.postTags(),
-		},
-		postTags: {
-			post: r.one.posts({
-				from: r.postTags.postId,
-				to: r.posts.id,
-			}),
-			tag: r.one.tags({
-				from: r.postTags.tagId,
-				to: r.tags.tagId,
-			}),
-		},
+export const adminRelations = relations(admin, ({ many }) => ({
+	posts: many(posts),
+}));
+
+export const categoriesRelations = relations(categories, ({ many }) => ({
+	posts: many(posts),
+}));
+
+export const postsRelations = relations(posts, ({ one, many }) => ({
+	author: one(admin, {
+		fields: [posts.userId],
+		references: [admin.userId],
 	}),
-);
+	category: one(categories, {
+		fields: [posts.categoryId],
+		references: [categories.categoryId],
+	}),
+	comments: many(comments),
+	postTags: many(postTags),
+}));
+
+export const commentsRelations = relations(comments, ({ one, many }) => ({
+	post: one(posts, {
+		fields: [comments.postId],
+		references: [posts.id],
+	}),
+	parentComment: one(comments, {
+		fields: [comments.parentId],
+		references: [comments.id],
+		relationName: "comment_threads",
+	}),
+	replies: many(comments, {
+		relationName: "comment_threads",
+	}),
+}));
+
+export const tagsRelations = relations(tags, ({ many }) => ({
+	postTags: many(postTags),
+}));
+
+export const postTagsRelations = relations(postTags, ({ one }) => ({
+	post: one(posts, {
+		fields: [postTags.postId],
+		references: [posts.id],
+	}),
+	tag: one(tags, {
+		fields: [postTags.tagId],
+		references: [tags.tagId],
+	}),
+}));

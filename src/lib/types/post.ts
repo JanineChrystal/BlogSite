@@ -1,8 +1,8 @@
 export interface Category {
 	slug: string;
 	name: string;
-	description: string;
-	heroImage: string;
+	description?: string;
+	heroImage?: string;
 }
 
 export interface Author {

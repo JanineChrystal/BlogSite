@@ -1,30 +1,21 @@
-import { getCategoryBySlug, getPostsByCategory } from "@/lib/data/post";
+import { getAllPosts } from "@/lib/data/post";
 import { CategoryPostsSection } from "../components/sections/category-posts-section";
 import { HeroSection } from "../components/sections/hero";
 
-// TEMP: hardcoded until category selection is wired up (navbar link -> slug, or searchParams)
-const TEMP_CATEGORY_SLUG = "travel-lifestyle";
-
-const CategoriesPage = async () => {
-	const category = await getCategoryBySlug(TEMP_CATEGORY_SLUG);
-	if (!category) return null; // mock data guarantees this won't hit right now
-
-	const { posts, hasMore } = await getPostsByCategory(TEMP_CATEGORY_SLUG);
+const AllPostsPage = async () => {
+	const { posts, hasMore } = await getAllPosts();
 
 	return (
 		<div className="w-full bg-surface">
 			<HeroSection
-				variant="category"
-				backgroundImage={category.heroImage}
-				backgroundAlt={category.name}
-				kicker="CATEGORY"
-				title={category.name}
-				description={category.description}
-				actions={[{ label: "Read Post", href: "#" }]}
+				variant="feature"
+				kicker="BLOG"
+				title="Words & Wonder"
+				description="A collection of thoughts, stories, and reviews. Dive into a world of creative expression and honest reflections."
 			/>
 
 			<CategoryPostsSection
-				categoryName={category.name}
+				categoryName="All Posts"
 				posts={posts}
 				hasMore={hasMore}
 			/>
@@ -32,4 +23,4 @@ const CategoriesPage = async () => {
 	);
 };
 
-export default CategoriesPage;
+export default AllPostsPage;

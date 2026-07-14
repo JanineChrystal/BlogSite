@@ -1,217 +1,149 @@
-import type {
-	Category,
-	Comment,
-	Post,
-	PostDetail,
-	Reaction,
-} from "@/lib/types/post";
-
-const CATEGORIES: Category[] = [
-	{
-		slug: "travel-lifestyle",
-		name: "Travel & Lifestyle",
-		description:
-			"Exploring the world and the way we live in it. Immersive stories, striking destinations, and the pulse of modern nomadism.",
-		heroImage: "/categories/travel-lifestyle-hero.jpg",
-	},
-];
-
-const POSTS: Post[] = [
-	{
-		id: "1",
-		slug: "hidden-temples-of-kyoto",
-		title: "The Hidden Temples of Kyoto",
-		excerpt:
-			"Beyond the crowded paths lie serene sanctuaries where time stands still. Discover the unspoken rules of temple etiquette.",
-		coverImage: "/posts/kyoto-temple.jpg",
-		readTimeMinutes: 8,
-		category: { slug: "travel-lifestyle", name: "Destinations" },
-		publishedAt: "2026-06-01T00:00:00.000Z",
-	},
-	{
-		id: "2",
-		slug: "digital-nomad-essentials",
-		title: "Digital Nomad Essentials",
-		excerpt:
-			"Curating the ultimate setup for remote work anywhere in the world. From high-performance gear to the minimalist mindset.",
-		coverImage: "/posts/nomad-desk.jpg",
-		readTimeMinutes: 12,
-		category: { slug: "travel-lifestyle", name: "Lifestyle" },
-		publishedAt: "2026-05-20T00:00:00.000Z",
-	},
-	{
-		id: "3",
-		slug: "midnight-street-food-trails",
-		title: "Midnight Street Food Trails",
-		excerpt:
-			"When the sun sets, the real flavors emerge. A deep dive into the chaotic, vibrant, and incredibly diverse world of night markets.",
-		coverImage: "/posts/street-food.jpg",
-		readTimeMinutes: 6,
-		category: { slug: "travel-lifestyle", name: "Culinary" },
-		publishedAt: "2026-05-10T00:00:00.000Z",
-	},
-	{
-		id: "4",
-		slug: "brutalist-retreats",
-		title: "Brutalist Retreats",
-		excerpt:
-			"Finding luxury in raw concrete and monumental spaces. Exploring the growing trend of stark, minimalist accommodations designed for total sensory deprivation and focus.",
-		coverImage: "/posts/brutalist.jpg",
-		readTimeMinutes: 10,
-		category: { slug: "travel-lifestyle", name: "Design" },
-		publishedAt: "2026-04-28T00:00:00.000Z",
-	},
-	{
-		id: "5",
-		slug: "the-perfect-carry-on",
-		title: "The Perfect Carry-On",
-		excerpt:
-			"An exhaustive review of premium luggage designed to survive the rigors of constant travel without compromising on style.",
-		coverImage: "/posts/carry-on.jpg",
-		readTimeMinutes: 5,
-		category: { slug: "travel-lifestyle", name: "Gear" },
-		publishedAt: "2026-04-15T00:00:00.000Z",
-	},
-	{
-		id: "6",
-		slug: "navigating-megacities",
-		title: "Navigating Megacities",
-		excerpt:
-			"Survival tactics and hidden gems in the world's most overwhelming urban jungles. How to find the pulse of a city in 48 hours.",
-		coverImage: "/posts/megacity.jpg",
-		readTimeMinutes: 15,
-		category: { slug: "travel-lifestyle", name: "Guides" },
-		publishedAt: "2026-03-30T00:00:00.000Z",
-	},
-];
-
-const POST_DETAILS: Record<string, PostDetail> = {
-	"echoes-of-the-nebula": {
-		id: "sci-fi-1",
-		slug: "echoes-of-the-nebula",
-		title: "Echoes of the Nebula: A Visual Masterpiece",
-		excerpt:
-			"The latest installment in the cosmic saga doesn't just push the boundaries of visual effects; it shatters them entirely.",
-		coverImage: "/posts/echoes-of-the-nebula-hero.jpg",
-		readTimeMinutes: 12,
-		category: {
-			slug: "entertainment-reviews",
-			name: "Entertainment & Reviews",
-		},
-		publishedAt: "2024-10-24T00:00:00.000Z",
-		author: { name: "Chrystl", avatarUrl: "/authors/chrystl.jpg" },
-		tags: [{ label: "Sci-Fi", emphasized: true }, { label: "Review" }],
-		content: [
-			{
-				id: "p1",
-				type: "paragraph",
-				lead: true,
-				text: "The latest installment in the cosmic saga doesn't just push the boundaries of visual effects; it shatters them entirely, leaving audiences in a state of suspended awe. Directed by a visionary who understands that silence in a vacuum is as powerful as an explosion, the film is a masterclass in atmospheric storytelling.",
-			},
-			{
-				id: "p2",
-				type: "paragraph",
-				text: "From the opening sequence—a harrowing ten-minute unedited tracking shot through the debris of a shattered moon—the stakes are immediately established not through exposition, but through the visceral reality of survival in the void. The use of pure black space, contrasting sharply against the stark, blinding whites of stellar phenomena, creates a visual language that feels both isolating and intimately beautiful.",
-			},
-			{
-				id: "c1",
-				type: "callout",
-				title: "Experience the Epic at Home",
-				description:
-					"Upgrade your home theater setup. Get the exclusive 4K Ultra HD Boxset with behind-the-scenes documentary.",
-				cta: { label: "Pre-order Now", href: "#" },
-			},
-			{ id: "h1", type: "heading", text: "The Poetics of the Void" },
-			{
-				id: "p3",
-				type: "paragraph",
-				text: "What elevates the narrative is its pacing. It eschews the frantic editing typical of modern blockbusters for a more deliberate, almost hypnotic rhythm. Conversations between characters occur over vast distances, plagued by the agonizing delay of light-speed communication, forcing a haunting poetry into their dialogue.",
-			},
-			{
-				id: "q1",
-				type: "quote",
-				lines: [
-					'"We are but dust,',
-					"Reflecting the dying light",
-					"Of stars that burnt out",
-					'A million lifetimes ago."',
-				],
-			},
-			{
-				id: "p4",
-				type: "paragraph",
-				text: "This interplay between immense cosmic scale and fragile human emotion is the film's core triumph. It demands your absolute attention, drawing you into its deep blacks and blinding highlights, making you feel the terrifying chill of deep space right in your theater seat.",
-			},
-		],
-		reactions: [
-			{ id: "deep", label: "Deep", icon: "droplet", count: 1200 },
-			{ id: "hot-take", label: "Hot Take", icon: "flame", count: 456 },
-			{ id: "grounded", label: "Grounded", icon: "leaf", count: 89 },
-			{ id: "fresh", label: "Fresh", icon: "wind", count: 302 },
-		],
-		commentCount: 24,
-		comments: [
-			{
-				id: "cm1",
-				author: { name: "Cinephile99" },
-				content:
-					"That opening tracking shot was absolutely insane. The contrast ratio alone deserves an award. I felt like I couldn't breathe until the title card hit.",
-				timestamp: "2 hours ago",
-				replies: [
-					{
-						id: "cm1-r1",
-						author: { name: "Chrystl", avatarUrl: "/authors/chrystl.jpg" },
-						isAuthor: true,
-						content:
-							"Exactly! The sound design playing against the absolute silence of space in that scene was masterful. It forces you to focus entirely on the visual desperation.",
-						timestamp: "1 hour ago",
-					},
-				],
-			},
-		],
-	},
-};
-
-const EMPTY_REACTIONS: Reaction[] = [
-	{ id: "deep", label: "Deep", icon: "droplet", count: 0 },
-	{ id: "hot-take", label: "Hot Take", icon: "flame", count: 0 },
-	{ id: "grounded", label: "Grounded", icon: "leaf", count: 0 },
-	{ id: "fresh", label: "Fresh", icon: "wind", count: 0 },
-];
+import { desc, eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { categories, comments as commentsTable, posts } from "@/lib/db/schema";
+import type { Category, Comment, Post, PostDetail } from "@/lib/types/post";
+import { formatDate } from "@/lib/utils/format-date";
+import { CATEGORY_METADATA } from "./category-meta";
 
 export async function getPostBySlug(
 	slug: string,
 ): Promise<PostDetail | undefined> {
-	if (POST_DETAILS[slug]) return POST_DETAILS[slug];
+	const data = await db.query.posts.findFirst({
+		where: eq(posts.slug, slug),
+		with: {
+			author: {
+				columns: {
+					userName: true,
+				},
+			},
+			category: {
+				columns: {
+					name: true,
+					slug: true,
+				},
+			},
+			comments: {
+				orderBy: [desc(commentsTable.createdAt)],
+			},
+			postTags: {
+				with: {
+					tag: true,
+				},
+			},
+		},
+	});
 
-	// TO DO: a minimal-but-valid PostDetail from the lightweight card data instead of 404ing.
-	const summary = POSTS.find((p) => p.slug === slug);
-	if (!summary) return undefined;
+	if (!data) return undefined;
 
-	const comments: Comment[] = [];
-	return {
-		...summary,
-		author: { name: "Chrystl" },
-		tags: [{ label: summary.category.name, emphasized: true }],
-		content: [
-			{ id: "p1", type: "paragraph", lead: true, text: summary.excerpt },
+	let content;
+	try {
+		content = JSON.parse(data.body);
+	} catch (e) {
+		content = [{ id: "p1", type: "paragraph", text: data.body, lead: true }];
+	}
+
+	const commentsById: Record<string, Comment & { parentId: string | null }> =
+		{};
+	const rootComments: Comment[] = [];
+
+	for (const c of data.comments) {
+		const comment: Comment & { parentId: string | null } = {
+			id: c.id,
+			author: { name: c.authorName },
+			content: c.body,
+			timestamp: formatDate(c.createdAt),
+			isAuthor: c.isAuthor,
+			parentId: c.parentId,
+			replies: [],
+		};
+		commentsById[c.id] = comment;
+	}
+
+	for (const c of data.comments) {
+		if (c.parentId && commentsById[c.parentId]) {
+			commentsById[c.parentId].replies?.push(commentsById[c.id]);
+		} else {
+			rootComments.push(commentsById[c.id]);
+		}
+	}
+
+	const firstParagraph = content.find(
+		(block: { type: string; text: string }) =>
+			block.type === "paragraph" && block.text,
+	);
+
+	const post: PostDetail = {
+		id: data.id,
+		slug: data.slug,
+		title: data.title,
+		excerpt: firstParagraph
+			? `${firstParagraph.text.substring(0, 150)}...`
+			: "",
+		coverImage: data.featuredImage ?? "",
+		readTimeMinutes: Math.ceil(data.body.split(" ").length / 200),
+		category: {
+			name: data.category.name,
+			slug: data.category.slug,
+		},
+		publishedAt: data.publishAt?.toISOString() ?? data.createdAt.toISOString(),
+		author: {
+			name: data.author.userName ?? "Admin",
+		},
+		tags: data.postTags.map((pt) => ({ label: pt.tag.name })),
+		content,
+		reactions: [
+			{ id: "deep", label: "Deep", icon: "droplet", count: data.deepCount },
+			{ id: "hot-take", label: "Hot Take", icon: "flame", count: data.hotTake },
+			{
+				id: "grounded",
+				label: "Grounded",
+				icon: "leaf",
+				count: data.groundedCount,
+			},
+			{ id: "cool", label: "Cool", icon: "wind", count: data.coolCount },
 		],
-		reactions: EMPTY_REACTIONS,
-		comments,
-		commentCount: 0,
+		comments: rootComments,
+		commentCount: data.comments.length,
 	};
+
+	return post;
 }
 
 const DEFAULT_PAGE_SIZE = 6;
 
 export async function getAllCategories(): Promise<Category[]> {
-	return CATEGORIES;
+	const allCategories = await db.query.categories.findMany();
+	return allCategories.map((c) => ({
+		name: c.name,
+		slug: c.slug,
+		description: CATEGORY_METADATA[c.slug]?.description ?? "",
+	}));
 }
 
 export async function getCategoryBySlug(
 	slug: string,
 ): Promise<Category | undefined> {
-	return CATEGORIES.find((c) => c.slug === slug);
+	const categoryData = await db.query.categories.findFirst({
+		where: eq(categories.slug, slug),
+	});
+
+	if (!categoryData) return undefined;
+
+	// Fetch the latest post in this category to get the hero image
+	const latestPost = await db.query.posts.findFirst({
+		where: eq(posts.categoryId, categoryData.categoryId),
+		orderBy: desc(posts.createdAt),
+		columns: {
+			featuredImage: true,
+		},
+	});
+
+	return {
+		name: categoryData.name,
+		slug: categoryData.slug,
+		description: CATEGORY_METADATA[slug]?.description ?? "",
+		heroImage: latestPost?.featuredImage ?? "/images/default-category-hero.jpg",
+	};
 }
 
 export interface PaginatedPosts {
@@ -219,16 +151,82 @@ export interface PaginatedPosts {
 	hasMore: boolean;
 }
 
+export async function getAllPosts({
+	page = 1,
+	pageSize = DEFAULT_PAGE_SIZE,
+} = {}): Promise<PaginatedPosts> {
+	const all = await db.query.posts.findMany({
+		orderBy: desc(posts.createdAt),
+		limit: pageSize + 1,
+		offset: (page - 1) * pageSize,
+		with: {
+			category: {
+				columns: {
+					name: true,
+					slug: true,
+				},
+			},
+		},
+	});
+
+	const hasMore = all.length > pageSize;
+	const resultPosts = all.slice(0, pageSize);
+
+	return {
+		posts: resultPosts.map((p) => ({
+			id: p.id,
+			slug: p.slug,
+			title: p.title,
+			excerpt: `${p.body.substring(0, 150)}...`,
+			coverImage: p.featuredImage ?? "",
+			readTimeMinutes: Math.ceil(p.body.split(" ").length / 200),
+			category: {
+				name: p.category.name,
+				slug: p.category.slug,
+			},
+			publishedAt: p.publishAt?.toISOString() ?? p.createdAt.toISOString(),
+		})),
+		hasMore,
+	};
+}
+
 export async function getPostsByCategory(
 	slug: string,
 	{ page = 1, pageSize = DEFAULT_PAGE_SIZE } = {},
 ): Promise<PaginatedPosts> {
-	const all = POSTS.filter((p) => p.category.slug === slug);
-	const start = (page - 1) * pageSize;
-	const end = start + pageSize;
+	const category = await db.query.categories.findFirst({
+		where: eq(categories.slug, slug),
+		columns: { categoryId: true, name: true },
+	});
+
+	if (!category) {
+		return { posts: [], hasMore: false };
+	}
+
+	const all = await db.query.posts.findMany({
+		where: eq(posts.categoryId, category.categoryId),
+		orderBy: desc(posts.createdAt),
+		limit: pageSize + 1,
+		offset: (page - 1) * pageSize,
+	});
+
+	const hasMore = all.length > pageSize;
+	const resultPosts = all.slice(0, pageSize);
 
 	return {
-		posts: all.slice(start, end),
-		hasMore: end < all.length,
+		posts: resultPosts.map((p) => ({
+			id: p.id,
+			slug: p.slug,
+			title: p.title,
+			excerpt: `${p.body.substring(0, 150)}...`,
+			coverImage: p.featuredImage ?? "",
+			readTimeMinutes: Math.ceil(p.body.split(" ").length / 200),
+			category: {
+				name: category.name,
+				slug: slug,
+			},
+			publishedAt: p.publishAt?.toISOString() ?? p.createdAt.toISOString(),
+		})),
+		hasMore,
 	};
 }

@@ -37,6 +37,8 @@ export default async function PostPage({ params }: PostPageProps) {
 				<CommentsSection
 					initialComments={post.comments}
 					commentCount={post.commentCount}
+					postId={post.id}
+					slug={slug}
 				/>
 			</article>
 		</div>
