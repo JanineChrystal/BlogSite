@@ -26,6 +26,7 @@ export interface HeroSectionProps {
 	title: React.ReactNode;
 	description?: string;
 	actions?: HeroAction[];
+	postSlug?: string;
 }
 
 const overlayByVariant = {
@@ -59,10 +60,22 @@ export function HeroSection({
 	title,
 	description,
 	actions,
+	postSlug,
 }: HeroSectionProps) {
 	const isCategory = variant === "category";
 	const isPost = variant === "post";
 	const isFeature = variant === "feature";
+
+	// Automatically create the primary "Read Post" action for the feature variant
+	// if a postSlug is provided. This makes the component easier to use and
+	// less error-prone, as the caller doesn't need to construct the URL manually.
+	const allActions = [...(actions || [])];
+	if (isFeature && postSlug) {
+		allActions.unshift({
+			label: "Read Post",
+			href: `/blog-post/${postSlug}`,
+		});
+	}
 
 	return (
 		<section
@@ -156,14 +169,14 @@ export function HeroSection({
 					</div>
 				)}
 
-				{actions && actions.length > 0 && (
+				{allActions.length > 0 && (
 					<div
 						className={cn(
 							"flex flex-col gap-4 sm:flex-row",
 							isCategory && "justify-center",
 						)}
 					>
-						{actions.map((action) => {
+						{allActions.map((action) => {
 							const Icon = action.icon;
 							return (
 								<Link

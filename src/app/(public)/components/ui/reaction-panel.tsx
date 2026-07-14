@@ -13,11 +13,6 @@ const ICONS: Record<Reaction["icon"], LucideIcon> = {
 	wind: Wind,
 };
 
-// Full literal class strings on purpose — see the note on Reaction.icon in
-// lib/types/post.ts. Tailwind can't see classes built from a template string.
-// I've replaced the non-working theme colors with standard Tailwind colors.
-// For a permanent solution, ensure your custom theme colors (e.g., tertiary-container)
-// are correctly defined in your tailwind.config.js file.
 const REACTION_STYLES: Record<
 	Reaction["icon"],
 	{ text: string; hoverBorder: string; hoverText: string; glow: string }

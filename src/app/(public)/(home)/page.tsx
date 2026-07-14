@@ -1,4 +1,3 @@
-import { Play } from "lucide-react";
 import {
 	getLatestPost,
 	getPopularCreativeWriting,
@@ -41,13 +40,7 @@ const HomePage = async () => {
 					backgroundAlt={latestPost.title}
 					title={latestPost.title}
 					tags={latestPost.category.name ? [latestPost.category.name] : []}
-					actions={[
-						{
-							label: "Read Post",
-							href: `/post/${latestPost.slug}`,
-							icon: Play,
-						},
-					]}
+					postSlug={latestPost.slug}
 				/>
 			)}
 

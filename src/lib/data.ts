@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, ilike, or } from "drizzle-orm";
 import { db } from "./db/index";
 import { categories, posts } from "./db/schema";
 
@@ -136,4 +136,40 @@ export async function getLatestPost() {
 			slug: latestPost.categorySlug,
 		},
 	};
+}
+
+export interface SearchResult {
+	id: string;
+	title: string;
+	slug: string;
+	categoryName: string | null;
+}
+
+/**
+ * Searches for posts based on a query string for an autocomplete dropdown.
+ * The query is matched against post titles and content.
+ * @param query The search term.
+ * @returns A promise that resolves to an array of posts.
+ */
+export async function searchPosts(query: string): Promise<SearchResult[]> {
+	if (!query) {
+		return [];
+	}
+
+	const searchQuery = `%${query}%`;
+
+	const results = await db
+		.select({
+			id: posts.id,
+			title: posts.title,
+			slug: posts.slug,
+			categoryName: categories.name,
+		})
+		.from(posts)
+		.leftJoin(categories, eq(posts.categoryId, categories.categoryId))
+		.where(or(ilike(posts.title, searchQuery), ilike(posts.body, searchQuery)))
+		.orderBy(desc(posts.createdAt))
+		.limit(5); // Limit results for dropdown display
+
+	return results;
 }

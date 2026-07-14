@@ -1,9 +1,9 @@
 "use client";
 
-import { X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { InputGroupDemo } from "@/components/ui/search/search";
+import { SearchBar } from "@/components/ui/search/search";
 
 export function Navbar() {
 	const [isSearchExpanded, setIsSearchExpanded] = useState(false);
@@ -29,7 +29,7 @@ export function Navbar() {
 
 	return (
 		<nav
-			className={`flex w-full justify-between px-4 md:px-8 py-2 md:py-4 fixed top-0 z-50 transition-all duration-500 ease-in-out text-white border-b ${
+			className={`flex w-full items-center justify-between px-4 md:px-8 py-2 md:py-4 fixed top-0 z-50 transition-all duration-500 ease-in-out text-white border-b ${
 				isScrolled
 					? "bg-black border-zinc-800"
 					: "bg-black/0 backdrop-blur-md border-transparent"
@@ -38,17 +38,22 @@ export function Navbar() {
 			{/* Brand logo automatically pointing to the homepage route */}
 			<Link
 				href="/"
-				className="text-red-600 font-black text-xl md:text-2xl tracking-tighter hover:opacity-90 transition"
+				className={`shrink-0 text-red-600 font-black text-xl md:text-2xl tracking-tighter hover:opacity-90 transition ${
+					isSearchExpanded ? "hidden md:block" : "block"
+				}`}
 			>
 				Chrystl.Blogs
 			</Link>
 
-			<div className="flex items-center">
+			<div
+				className={`flex items-center gap-2 ${isSearchExpanded ? "w-full" : ""} md:w-auto`}
+			>
+				{/* Desktop search bar and expanded mobile search bar */}
 				<div
-					className={`${isSearchExpanded ? "flex w-full" : "hidden md:block w-64"} items-center gap-2`}
+					className={`${isSearchExpanded ? "flex w-full" : "hidden md:flex"} items-center gap-2 md:w-64`}
 				>
 					<div className="grow">
-						<InputGroupDemo />
+						<SearchBar />
 					</div>
 
 					{isSearchExpanded && (
@@ -56,20 +61,22 @@ export function Navbar() {
 							type="button"
 							onClick={() => setIsSearchExpanded(false)}
 							className="md:hidden text-zinc-400 hover:text-white transition p-1"
+							aria-label="Close search"
 						>
 							<X className="w-5 h-5" />
 						</button>
 					)}
-					{!isSearchExpanded && (
-						<button
-							type="button"
-							onClick={() => setIsSearchExpanded(true)}
-							className="md:hidden text-zinc-400 hover:text-white transition"
-						>
-							<InputGroupDemo />
-						</button>
-					)}
 				</div>
+				{!isSearchExpanded && (
+					<button
+						type="button"
+						onClick={() => setIsSearchExpanded(true)}
+						className="md:hidden text-zinc-400 hover:text-white transition"
+						aria-label="Open search"
+					>
+						<Search className="w-5 h-5" />
+					</button>
+				)}
 			</div>
 		</nav>
 	);
