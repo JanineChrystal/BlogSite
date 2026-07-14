@@ -12,6 +12,8 @@ import { cn } from "@/lib/utils/utils";
 interface CommentFormProps {
 	postId: string;
 	slug: string;
+	parentId?: string;
+	onCancel?: () => void;
 }
 
 const fieldClass =
@@ -30,7 +32,12 @@ function SubmitButton() {
 	);
 }
 
-export function CommentForm({ postId, slug }: CommentFormProps) {
+export function CommentForm({
+	postId,
+	slug,
+	parentId,
+	onCancel,
+}: CommentFormProps) {
 	const initialState: CommentFormState = { errors: {} };
 	const [state, formAction] = useActionState(addComment, initialState);
 	const formRef = useRef<HTMLFormElement>(null);
@@ -38,17 +45,22 @@ export function CommentForm({ postId, slug }: CommentFormProps) {
 	useEffect(() => {
 		if (state.success) {
 			formRef.current?.reset();
+			onCancel?.();
 		}
-	}, [state.success]);
+	}, [state.success, onCancel]);
 
 	return (
 		<form
 			ref={formRef}
 			action={formAction}
-			className="mb-12 rounded-xl border border-surface-container-high bg-surface-container-low p-6"
+			className={cn(
+				"mb-12 rounded-xl border border-surface-container-high bg-surface-container-low p-6",
+				parentId && "mb-0 border-none bg-transparent p-0",
+			)}
 		>
 			<input type="hidden" name="postId" value={postId} />
 			<input type="hidden" name="slug" value={slug} />
+			{parentId && <input type="hidden" name="parentId" value={parentId} />}
 			{state.errors?._form && (
 				<p className="mb-2 text-sm text-red-500">
 					{state.errors._form.join(", ")}
@@ -95,7 +107,16 @@ export function CommentForm({ postId, slug }: CommentFormProps) {
 					</p>
 				)}
 			</div>
-			<div className="flex justify-end">
+			<div className="flex items-center justify-end">
+				{onCancel && (
+					<button
+						type="button"
+						onClick={onCancel}
+						className="mr-4 h-auto rounded bg-surface-container px-8 py-3 font-heading text-label-sm uppercase tracking-wider text-on-surface transition-colors hover:bg-surface-container-high"
+					>
+						Cancel
+					</button>
+				)}
 				<SubmitButton />
 			</div>
 		</form>

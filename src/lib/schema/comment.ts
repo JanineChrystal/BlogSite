@@ -11,4 +11,5 @@ export const CommentSchema = z.object({
 		.max(2000, "Comment is too long."),
 	postId: z.string().uuid(),
 	slug: z.string(),
+	parentId: z.string().uuid().optional().nullable(),
 });

@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { asc, desc, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { categories, comments as commentsTable, posts } from "@/lib/db/schema";
 import type {
@@ -44,7 +44,7 @@ export async function getPostBySlug(
 	let content: ContentBlock[];
 	try {
 		content = JSON.parse(data.body);
-	} catch (e) {
+	} catch {
 		content = [{ id: "p1", type: "paragraph", text: data.body, lead: true }];
 	}
 
@@ -168,7 +168,7 @@ function generateExcerpt(body: string): string {
 		if (firstParagraph) {
 			return `${firstParagraph.text.substring(0, 150)}...`;
 		}
-	} catch (e) {
+	} catch {
 		// If parsing fails, it might be plain text
 		return `${body.substring(0, 150)}...`;
 	}
@@ -214,10 +214,29 @@ export async function getAllPosts({
 	};
 }
 
+/** Resolves the requested sort key to a Drizzle order-by expression.
+ *  Returning from a function (rather than assigning an untyped `let`
+ *  across a switch) lets TypeScript infer the union type from the
+ *  return statements themselves — no `any`, no manual type import needed. */
+function resolveSortOrder(sort: string) {
+	switch (sort) {
+		case "oldest":
+			return asc(posts.createdAt);
+		case "read-time":
+			// Approximates "quickest read" via body length until a real
+			// word-count/read-time column exists on the posts table.
+			return asc(sql<number>`length(${posts.body})`);
+		default:
+			return desc(posts.createdAt);
+	}
+}
+
 export async function getPostsByCategory(
 	slug: string,
-	{ page = 1, pageSize = DEFAULT_PAGE_SIZE } = {},
+	options: { page?: number; pageSize?: number; sort?: string } = {},
 ): Promise<PaginatedPosts> {
+	const { page = 1, pageSize = DEFAULT_PAGE_SIZE, sort = "newest" } = options;
+
 	const category = await db.query.categories.findFirst({
 		where: eq(categories.slug, slug),
 		columns: { categoryId: true, name: true },
@@ -229,7 +248,7 @@ export async function getPostsByCategory(
 
 	const all = await db.query.posts.findMany({
 		where: eq(posts.categoryId, category.categoryId),
-		orderBy: desc(posts.createdAt),
+		orderBy: resolveSortOrder(sort),
 		limit: pageSize + 1,
 		offset: (page - 1) * pageSize,
 	});

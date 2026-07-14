@@ -1,14 +1,26 @@
+"use client";
+
 import { User } from "lucide-react";
+import { useState } from "react";
 import type { Comment } from "@/lib/types/post";
 import { cn } from "@/lib/utils/utils";
+import { CommentForm } from "./comment-form";
 
 interface CommentThreadProps {
 	comment: Comment;
 	depth?: number;
+	postId: string;
+	slug: string;
 }
 
-export function CommentThread({ comment, depth = 0 }: CommentThreadProps) {
+export function CommentThread({
+	comment,
+	depth = 0,
+	postId,
+	slug,
+}: CommentThreadProps) {
 	const isReply = depth > 0;
+	const [isReplying, setIsReplying] = useState(false);
 
 	return (
 		<div className={cn("group", isReply && "relative ml-16 mt-6")}>
@@ -61,16 +73,34 @@ export function CommentThread({ comment, depth = 0 }: CommentThreadProps) {
 					{!isReply && (
 						<button
 							type="button"
+							onClick={() => setIsReplying((prev) => !prev)}
 							className="mt-3 font-heading text-label-sm uppercase tracking-wider text-primary-container transition-colors hover:text-primary"
 						>
-							Reply
+							{isReplying ? "Cancel" : "Reply"}
 						</button>
 					)}
 				</div>
 			</div>
 
+			{isReplying && (
+				<div className="mt-4 pl-16">
+					<CommentForm
+						postId={postId}
+						slug={slug}
+						parentId={comment.id}
+						onCancel={() => setIsReplying(false)}
+					/>
+				</div>
+			)}
+
 			{comment.replies?.map((reply) => (
-				<CommentThread key={reply.id} comment={reply} depth={depth + 1} />
+				<CommentThread
+					key={reply.id}
+					comment={reply}
+					depth={depth + 1}
+					postId={postId}
+					slug={slug}
+				/>
 			))}
 		</div>
 	);

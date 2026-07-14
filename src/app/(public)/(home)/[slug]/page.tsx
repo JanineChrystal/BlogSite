@@ -5,15 +5,21 @@ import { HeroSection } from "../../components/sections/hero";
 
 interface CategoryPageProps {
 	params: Promise<{ slug: string }>;
+	searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default async function CategoryPage({ params }: CategoryPageProps) {
+export default async function CategoryPage({
+	params,
+	searchParams,
+}: CategoryPageProps) {
 	const { slug } = await params;
+	const sort =
+		typeof searchParams.sort === "string" ? searchParams.sort : "newest";
 
 	// Fetch category details and posts in parallel
 	const [category, paginatedPosts] = await Promise.all([
 		getCategoryBySlug(slug),
-		getPostsByCategory(slug),
+		getPostsByCategory(slug, { sort }),
 	]);
 
 	// If the category doesn't exist, show a 404 page

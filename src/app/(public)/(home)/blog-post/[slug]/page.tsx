@@ -3,6 +3,7 @@ import { BlogBody } from "@/app/(public)/components/ui/blog-body";
 import { ReactionPanel } from "@/app/(public)/components/ui/reaction-panel";
 import { getPostBySlug } from "@/lib/data/post";
 import { formatDate } from "@/lib/utils/format-date";
+import { CategoryToolbar } from "../../../components/sections/category-toolbar";
 import { CommentsSection } from "../../../components/sections/comment-section";
 import { HeroSection } from "../../../components/sections/hero";
 
@@ -31,16 +32,23 @@ export default async function PostPage({ params }: PostPageProps) {
 				]}
 			/>
 
-			<article className="mx-auto max-w-3xl px-6 py-12 md:px-0">
-				<BlogBody blocks={post.content} />
-				<ReactionPanel reactions={post.reactions} />
-				<CommentsSection
-					initialComments={post.comments}
-					commentCount={post.commentCount}
-					postId={post.id}
-					slug={slug}
+			<div className="mx-auto max-w-360 px-6 py-12 md:px-16">
+				<CategoryToolbar
+					categoryName={post.category.name}
+					categorySlug={post.category.slug}
+					postTitle={post.title}
 				/>
-			</article>
+				<article className="mx-auto mt-10 max-w-3xl md:px-0">
+					<BlogBody blocks={post.content} />
+					<ReactionPanel reactions={post.reactions} />
+					<CommentsSection
+						initialComments={post.comments}
+						commentCount={post.commentCount}
+						postId={post.id}
+						slug={slug}
+					/>
+				</article>
+			</div>
 		</div>
 	);
 }

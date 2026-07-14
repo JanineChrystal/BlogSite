@@ -15,6 +15,7 @@ export async function addComment(
 		body: formData.get("body"),
 		postId: formData.get("postId"),
 		slug: formData.get("slug"),
+		parentId: formData.get("parentId"),
 	};
 
 	const result = CommentSchema.safeParse(rawData);
@@ -30,6 +31,7 @@ export async function addComment(
 			postId: result.data.postId,
 			authorName: result.data.authorName,
 			body: result.data.body,
+			parentId: result.data.parentId,
 		});
 	} catch (error) {
 		return {

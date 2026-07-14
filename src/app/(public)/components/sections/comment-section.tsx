@@ -27,7 +27,12 @@ export function CommentsSection({
 			<CommentForm postId={postId} slug={slug} />
 			<div className="space-y-8">
 				{initialComments.map((comment) => (
-					<CommentThread key={comment.id} comment={comment} />
+					<CommentThread
+						key={comment.id}
+						comment={comment}
+						postId={postId}
+						slug={slug}
+					/>
 				))}
 			</div>
 		</section>
