@@ -90,7 +90,7 @@ export const postTags = pgTable(
 			.notNull(),
 		slug: varchar("slug", { length: 50 }).notNull(),
 	},
-	(table) => [primaryKey({ columns: [table.postId, table.tagId] })],
+	(table) => ({ pk: primaryKey({ columns: [table.postId, table.tagId] }) }),
 );
 
 export const adminRelations = relations(admin, ({ many }) => ({

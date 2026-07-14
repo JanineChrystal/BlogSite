@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState, useEffect, useRef } from "react";
+import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/buttons/button";
 import { Input } from "@/components/ui/input-group/input";
 import { Textarea } from "@/components/ui/input-group/textarea";
@@ -32,7 +32,7 @@ function SubmitButton() {
 
 export function CommentForm({ postId, slug }: CommentFormProps) {
 	const initialState: CommentFormState = { errors: {} };
-	const [state, formAction] = useFormState(addComment, initialState);
+	const [state, formAction] = useActionState(addComment, initialState);
 	const formRef = useRef<HTMLFormElement>(null);
 
 	useEffect(() => {

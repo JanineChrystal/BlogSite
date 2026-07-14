@@ -1,7 +1,13 @@
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { categories, comments as commentsTable, posts } from "@/lib/db/schema";
-import type { Category, Comment, Post, PostDetail } from "@/lib/types/post";
+import type {
+	Category,
+	Comment,
+	ContentBlock,
+	Post,
+	PostDetail,
+} from "@/lib/types/post";
 import { formatDate } from "@/lib/utils/format-date";
 import { CATEGORY_METADATA } from "./category-meta";
 
@@ -35,7 +41,7 @@ export async function getPostBySlug(
 
 	if (!data) return undefined;
 
-	let content;
+	let content: ContentBlock[];
 	try {
 		content = JSON.parse(data.body);
 	} catch (e) {
@@ -51,7 +57,7 @@ export async function getPostBySlug(
 			id: c.id,
 			author: { name: c.authorName },
 			content: c.body,
-			timestamp: formatDate(c.createdAt),
+			timestamp: formatDate(c.createdAt.toISOString()),
 			isAuthor: c.isAuthor,
 			parentId: c.parentId,
 			replies: [],
@@ -68,8 +74,8 @@ export async function getPostBySlug(
 	}
 
 	const firstParagraph = content.find(
-		(block: { type: string; text: string }) =>
-			block.type === "paragraph" && block.text,
+		(block): block is Extract<ContentBlock, { type: "paragraph" }> =>
+			block.type === "paragraph" && !!block.text,
 	);
 
 	const post: PostDetail = {
@@ -151,6 +157,24 @@ export interface PaginatedPosts {
 	hasMore: boolean;
 }
 
+function generateExcerpt(body: string): string {
+	try {
+		// Assuming body is a JSON string of content blocks
+		const content: ContentBlock[] = JSON.parse(body);
+		const firstParagraph = content.find(
+			(block): block is Extract<ContentBlock, { type: "paragraph" }> =>
+				block.type === "paragraph" && !!block.text,
+		);
+		if (firstParagraph) {
+			return `${firstParagraph.text.substring(0, 150)}...`;
+		}
+	} catch (e) {
+		// If parsing fails, it might be plain text
+		return `${body.substring(0, 150)}...`;
+	}
+	return "";
+}
+
 export async function getAllPosts({
 	page = 1,
 	pageSize = DEFAULT_PAGE_SIZE,
@@ -177,7 +201,7 @@ export async function getAllPosts({
 			id: p.id,
 			slug: p.slug,
 			title: p.title,
-			excerpt: `${p.body.substring(0, 150)}...`,
+			excerpt: generateExcerpt(p.body),
 			coverImage: p.featuredImage ?? "",
 			readTimeMinutes: Math.ceil(p.body.split(" ").length / 200),
 			category: {
@@ -218,7 +242,7 @@ export async function getPostsByCategory(
 			id: p.id,
 			slug: p.slug,
 			title: p.title,
-			excerpt: `${p.body.substring(0, 150)}...`,
+			excerpt: generateExcerpt(p.body),
 			coverImage: p.featuredImage ?? "",
 			readTimeMinutes: Math.ceil(p.body.split(" ").length / 200),
 			category: {

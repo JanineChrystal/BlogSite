@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils/utils";
-import { Card, CardContent } from "./card";
 
 interface PostCardProps {
 	title: string;
@@ -11,6 +10,7 @@ interface PostCardProps {
 	orientation?: "landscape" | "portrait";
 	captionEmphasis?: "bold" | "medium";
 	className?: string;
+	sizes?: string;
 }
 
 export function PostCard({
@@ -21,26 +21,31 @@ export function PostCard({
 	orientation = "landscape",
 	captionEmphasis = "bold",
 	className,
+	sizes = "50vw",
 }: PostCardProps) {
 	const aspectClass =
 		orientation === "landscape" ? "aspect-video" : "aspect-[2/3]";
 
 	return (
 		<Link
-			href={`/category/${postSlug}`}
-			className={cn("group block h-full", className)}
+			href={`/blog-post/${postSlug}`}
+			className={cn("group block", className)}
 		>
-			<Card className="relative h-full overflow-hidden rounded-lg border-none bg-surface">
-				<div className={cn("w-full", aspectClass)}>
-					<Image
-						src={imageUrl}
-						alt={title}
-						fill
-						className="object-cover opacity-80 transition-transform duration-500 group-hover:scale-105 group-hover:opacity-100"
-					/>
-				</div>
+			<div
+				className={cn(
+					"relative w-full overflow-hidden rounded-lg bg-surface",
+					aspectClass,
+				)}
+			>
+				<Image
+					src={imageUrl}
+					alt={title}
+					fill
+					sizes={sizes}
+					className="object-cover opacity-80 transition-transform duration-500 group-hover:scale-105 group-hover:opacity-100"
+				/>
 
-				<CardContent className="absolute inset-0 flex flex-col justify-end border-none bg-linear-to-t from-black/90 via-black/20 to-transparent p-4">
+				<div className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/90 via-black/20 to-transparent p-4">
 					<h3
 						className={cn(
 							"leading-tight text-white",
@@ -56,8 +61,8 @@ export function PostCard({
 							{categoryLabel}
 						</span>
 					)}
-				</CardContent>
-			</Card>
+				</div>
+			</div>
 		</Link>
 	);
 }

@@ -12,7 +12,7 @@ interface BlogCardProps {
 export function BlogCard({ post, className }: BlogCardProps) {
 	return (
 		<Link
-			href={`/post/${post.slug}`}
+			href={`/blog-post/${post.slug}`}
 			className={cn(
 				"group block overflow-hidden rounded-lg bg-surface-container-low ring-1 ring-outline-variant/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0px_10px_30px_rgba(0,0,0,0.5)]",
 				className,
@@ -23,6 +23,7 @@ export function BlogCard({ post, className }: BlogCardProps) {
 					src={post.coverImage}
 					alt={post.title}
 					fill
+					sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
 					className="object-cover transition-transform duration-500 group-hover:scale-110"
 				/>
 			</div>

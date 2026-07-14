@@ -35,10 +35,7 @@ export function CategoryToolbar({
 	return (
 		<div className="flex items-center justify-between border-b border-outline-variant/30 pb-6">
 			<nav className="flex items-center gap-1.5 font-heading text-label-sm uppercase text-on-surface/50">
-				<Link
-					href="/category"
-					className="transition-colors hover:text-on-surface"
-				>
+				<Link href="/" className="transition-colors hover:text-on-surface">
 					All Categories
 				</Link>
 				<ChevronRight className="size-3.5" />

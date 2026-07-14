@@ -79,6 +79,7 @@ export function HeroSection({
 					alt={backgroundAlt}
 					fill
 					priority
+					sizes="100vw"
 					className="w-full h-full object-cover opacity-40"
 				/>
 				<div className={cn("absolute inset-0", overlayByVariant[variant])} />

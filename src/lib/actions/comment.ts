@@ -37,6 +37,6 @@ export async function addComment(
 		};
 	}
 
-	revalidatePath(`/category/${result.data.slug}`);
+	revalidatePath(`/blog-post/${result.data.slug}`);
 	return { success: true };
 }

@@ -57,7 +57,7 @@ export function CategorySection({
 			</h2>
 			{id !== "whats-new" && (
 				<Link
-					href={`/category/${id}`}
+					href={`/${id}`}
 					className="text-xs md:text-sm font-semibold text-zinc-400 hover:text-white transition"
 				>
 					View more &rarr;
@@ -72,6 +72,11 @@ export function CategorySection({
 			cardOrientation === "landscape"
 				? "w-[300px] md:w-[400px]"
 				: "w-[160px] md:w-[220px]";
+
+		const cardImageSizes =
+			cardOrientation === "landscape"
+				? "(min-width: 768px) 400px, 300px"
+				: "(min-width: 768px) 220px, 160px";
 
 		return (
 			<section className="py-8 md:py-12 bg-black">
@@ -101,6 +106,7 @@ export function CategorySection({
 								postSlug={post.slug}
 								orientation={cardOrientation}
 								captionEmphasis={captionEmphasis}
+								sizes={cardImageSizes}
 								className={cn("flex-none snap-start", cardWidthClass)}
 							/>
 						))}
@@ -121,6 +127,8 @@ export function CategorySection({
 
 	// Default grid layout
 	const displayPosts = posts.slice(0, 3);
+	const gridImageSizes =
+		"(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw";
 
 	return (
 		<section className="py-8 md:py-12 px-4 md:px-8 bg-black">
@@ -134,6 +142,7 @@ export function CategorySection({
 						imageUrl={post.imageUrl}
 						postSlug={post.slug}
 						orientation={cardOrientation}
+						sizes={gridImageSizes}
 					/>
 				))}
 			</div>

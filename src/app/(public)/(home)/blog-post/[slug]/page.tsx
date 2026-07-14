@@ -3,8 +3,8 @@ import { BlogBody } from "@/app/(public)/components/ui/blog-body";
 import { ReactionPanel } from "@/app/(public)/components/ui/reaction-panel";
 import { getPostBySlug } from "@/lib/data/post";
 import { formatDate } from "@/lib/utils/format-date";
-import { CommentsSection } from "../../components/sections/comment-section";
-import { HeroSection } from "../../components/sections/hero";
+import { CommentsSection } from "../../../components/sections/comment-section";
+import { HeroSection } from "../../../components/sections/hero";
 
 interface PostPageProps {
 	params: Promise<{ slug: string }>;
