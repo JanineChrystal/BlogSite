@@ -1,29 +1,45 @@
 "use client";
 
-import { Search, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SearchBar } from "@/components/ui/search/search";
+import { NAV_CONFIG } from "../../constants/nav";
+
+function categoryHref(slug: string) {
+	// There's no standalone "all categories" index page — the home page
+	// already surfaces every category, so that entry routes there instead.
+	return slug === "all-categories" ? "/" : `/${slug}`;
+}
 
 export function Navbar() {
 	const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isScrolled, setIsScrolled] = useState(false);
+	const menuRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		const handleScroll = () => {
-			if (window.scrollY > 50) {
-				setIsScrolled(true);
-			} else {
-				setIsScrolled(false);
-			}
+			setIsScrolled(window.scrollY > 50);
 		};
 
 		window.addEventListener("scroll", handleScroll);
-
-		// Cleanup function to prevent memory leaks when navigating away
 		return () => {
 			window.removeEventListener("scroll", handleScroll);
+		};
+	}, []);
+
+	// Close the mobile menu on outside click — same pattern as SearchBar's
+	// click-outside handling, kept consistent rather than reinvented here.
+	useEffect(() => {
+		function handleClickOutside(event: MouseEvent) {
+			if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+				setIsMenuOpen(false);
+			}
+		}
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, []);
 
@@ -67,16 +83,56 @@ export function Navbar() {
 						</button>
 					)}
 				</div>
+
 				{!isSearchExpanded && (
-					<button
-						type="button"
-						onClick={() => setIsSearchExpanded(true)}
-						className="md:hidden text-zinc-400 hover:text-white transition"
-						aria-label="Open search"
-					>
-						<Search className="w-5 h-5" />
-					</button>
+					<>
+						{/* Search Icon (mobile only) */}
+						<button
+							type="button"
+							onClick={() => setIsSearchExpanded(true)}
+							className="md:hidden text-zinc-400 hover:text-white transition"
+							aria-label="Open search"
+						>
+							<Search className="w-5 h-5" />
+						</button>
+					</>
 				)}
+
+				{/* Hamburger Menu (always, unless mobile search is expanded) */}
+				<div className="relative">
+					{!isSearchExpanded && (
+						<button
+							type="button"
+							onClick={() => setIsMenuOpen((open) => !open)}
+							className="text-zinc-400 hover:text-white transition"
+							aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+						>
+							{isMenuOpen ? (
+								<X className="w-5 h-5" />
+							) : (
+								<Menu className="w-5 h-5" />
+							)}
+						</button>
+					)}
+					{/* Category dropdown menu */}
+					{isMenuOpen && (
+						<div
+							ref={menuRef}
+							className="absolute top-full right-0 mt-2 flex w-48 flex-col rounded-md border border-zinc-800 bg-black py-1 shadow-lg"
+						>
+							{NAV_CONFIG.categories.map((cat) => (
+								<Link
+									key={cat.slug}
+									href={categoryHref(cat.slug)}
+									onClick={() => setIsMenuOpen(false)}
+									className="px-4 py-2 text-left text-sm font-semibold uppercase tracking-wider text-zinc-300 hover:bg-zinc-900 hover:text-white transition"
+								>
+									{cat.name}
+								</Link>
+							))}
+						</div>
+					)}
+				</div>
 			</div>
 		</nav>
 	);

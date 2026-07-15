@@ -38,7 +38,7 @@ const overlayByVariant = {
 
 const containerByVariant = {
 	feature: "items-start text-left max-w-2xl mt-12 md:mt-0",
-	category: "items-center text-center max-w-3xl mx-auto",
+	category: "items-center text-center max-w-3xl",
 	post: "items-start text-left max-w-[1200px] mx-auto justify-end",
 } as const;
 
@@ -82,8 +82,9 @@ export function HeroSection({
 			className={cn(
 				"relative w-full flex px-4 md:px-8 py-12 md:py-16 bg-black",
 				isPost && "h-179 min-h-150 flex-col justify-end",
-				isFeature && "min-h-[max(85vh,600px)] items-center",
-				isCategory && "min-h-[60vh] md:min-h-[80vh] justify-center",
+				isFeature && "min-h-[max(85vh,600px)] items-center", // Already centers horizontally for feature variant
+				isCategory &&
+					"min-h-[60vh] md:min-h-[80vh] justify-center items-center", // Added items-center for horizontal alignment
 			)}
 		>
 			<div className="absolute inset-0 z-0">
@@ -130,7 +131,7 @@ export function HeroSection({
 
 				<h1
 					className={cn(
-						"mb-4 font-heading text-on-primary-container md:mb-6",
+						"mb-4 font-heading text-on-primary-container md:mb-6 mt-3",
 						titleSizeByVariant[variant],
 					)}
 				>
