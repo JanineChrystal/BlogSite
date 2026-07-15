@@ -285,6 +285,43 @@ export async function getCategorizedPosts({
 	};
 }
 
+/**
+ * Efficiently counts the number of posts for a given category and optional tags,
+ * capped at the number of posts per page. This is used to determine the
+ * number of skeletons to show in a loading UI.
+ * @returns A promise that resolves to the number of posts for the initial page.
+ */
+export async function getInitialPostCount({
+	categorySlug,
+	tagSlugs,
+}: {
+	categorySlug: string;
+	tagSlugs?: string[];
+}): Promise<number> {
+	const hasTagFilter = !!tagSlugs && tagSlugs.length > 0;
+
+	// Base query to count posts
+	const query = db
+		.select({ count: sql<number>`count(DISTINCT ${posts.id})`.mapWith(Number) })
+		.from(posts)
+		.innerJoin(categories, eq(posts.categoryId, categories.categoryId));
+
+	// Conditionally add joins for tag filtering
+	if (hasTagFilter) {
+		query
+			.innerJoin(postTags, eq(posts.id, postTags.postId))
+			.innerJoin(tags, eq(postTags.tagId, tags.tagId));
+	}
+
+	const whereConditions = [eq(categories.slug, categorySlug)];
+	if (hasTagFilter) {
+		whereConditions.push(inArray(tags.slug, tagSlugs as string[]));
+	}
+
+	const [result] = await query.where(and(...whereConditions));
+	return Math.min(result?.count ?? 0, POSTS_PER_PAGE);
+}
+
 export interface Tag {
 	name: string;
 	slug: string;

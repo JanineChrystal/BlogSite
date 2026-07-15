@@ -1,11 +1,15 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import {
 	getCategorizedPosts,
 	getCategoryBySlug,
+	getInitialPostCount,
 	getTagsByCategory,
 } from "@/lib/data";
 import { CategoryPostsSection } from "../../components/sections/category-posts-section";
+import type { Tag } from "../../components/sections/category-toolbar";
 import { HeroSection } from "../../components/sections/hero";
+import { CategoryPostsSectionSkeleton } from "./loading";
 
 interface CategoryPageProps {
 	params: Promise<{ slug: string }>;
@@ -16,6 +20,38 @@ interface CategoryPageProps {
 	}>;
 }
 
+async function PostsList({
+	categorySlug,
+	categoryName,
+	tags,
+	tagSlugs,
+	sort,
+	page,
+}: {
+	categorySlug: string;
+	categoryName: string;
+	tags: Tag[];
+	tagSlugs?: string[];
+	sort?: string;
+	page?: string;
+}) {
+	const { posts, hasMore } = await getCategorizedPosts({
+		categorySlug,
+		tagSlugs,
+		sortBy: sort,
+		page,
+	});
+
+	return (
+		<CategoryPostsSection
+			categoryName={categoryName}
+			posts={posts}
+			tags={tags}
+			hasMore={hasMore}
+		/>
+	);
+}
+
 export default async function CategoryPage({
 	params,
 	searchParams,
@@ -24,16 +60,11 @@ export default async function CategoryPage({
 	const resolvedSearchParams = await searchParams;
 	const tagSlugs = resolvedSearchParams.tags?.split(",").filter(Boolean);
 
-	// Fetch category details and posts in parallel
-	const [category, postsResult, tags] = await Promise.all([
+	// Fetch metadata and the initial post count for the skeleton
+	const [category, tags, initialPostCount] = await Promise.all([
 		getCategoryBySlug(slug),
-		getCategorizedPosts({
-			categorySlug: slug,
-			tagSlugs,
-			sortBy: resolvedSearchParams.sort,
-			page: resolvedSearchParams.page,
-		}),
 		getTagsByCategory(slug),
+		getInitialPostCount({ categorySlug: slug, tagSlugs }),
 	]);
 
 	// If the category doesn't exist, show a 404 page
@@ -41,9 +72,10 @@ export default async function CategoryPage({
 		notFound();
 	}
 
-	const { posts, hasMore } = postsResult;
-
-	const heroImage = posts[0]?.coverImage ?? "/images/default-category-hero.jpg";
+	// NOTE: Because we are deferring the post fetching to the <PostsList>
+	// component, we can't use the first post's image for the hero section
+	// during the initial render. We'll use a default image instead.
+	const heroImage = "/images/default-category-hero.jpg";
 
 	return (
 		<div className="w-full bg-surface">
@@ -53,12 +85,21 @@ export default async function CategoryPage({
 				backgroundAlt={`Hero image for ${category.name}`}
 				title={category.name}
 			/>
-			<CategoryPostsSection
-				categoryName={category.name}
-				posts={posts}
-				tags={tags}
-				hasMore={hasMore}
-			/>
+			<Suspense
+				// The key prop is important here to make Suspense re-render the
+				// fallback when search params change (e.g., filtering by tags).
+				key={resolvedSearchParams.tags ?? "all"}
+				fallback={<CategoryPostsSectionSkeleton postCount={initialPostCount} />}
+			>
+				<PostsList
+					categorySlug={slug}
+					categoryName={category.name}
+					tags={tags}
+					tagSlugs={tagSlugs}
+					sort={resolvedSearchParams.sort}
+					page={resolvedSearchParams.page}
+				/>
+			</Suspense>
 		</div>
 	);
 }
