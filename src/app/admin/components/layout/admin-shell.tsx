@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useAdminSidebar } from "@/app/hooks/useAdminSideBar";
-import { LogoutDialog } from "../ui/log-out";
+import { LogoutDialog } from "../ui/dialogs/log-out";
 import { MobileHeader } from "../ui/mobile-header";
 import { Sidebar } from "./sidebar";
 

@@ -18,13 +18,13 @@ export const NAV_ITEMS: NavItem[] = [
 	{
 		id: "dashboard",
 		label: "Home Dashboard",
-		href: "/admin",
+		href: "/admin/dashboard",
 		icon: LayoutDashboard,
 	},
 	{
 		id: "posts",
 		label: "Manage Posts",
-		href: "/admin/posts",
+		href: "/admin/post-management",
 		icon: FileText,
 	},
 	{

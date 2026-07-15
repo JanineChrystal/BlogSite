@@ -31,6 +31,13 @@ export default function RootLayout({
 				inter.variable,
 			)}
 		>
+			<head>
+				{/* Simple comment: Load the Material Symbols font to render the search and delete icons correctly */}
+				<link
+					href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+					rel="stylesheet"
+				/>
+			</head>
 			<body className="relative min-h-screen flex flex-col m-0 p-0">
 				{children}
 			</body>

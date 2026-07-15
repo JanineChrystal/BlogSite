@@ -4,7 +4,7 @@ interface SidebarProps {
 	onLogoutClick: () => void;
 }
 
-/** Fixed, always-visible sidebar for md+ screens. Hidden on mobile — see MobileHeader. */
+/** always-visible sidebar for md+ screens. Hidden on mobile. */
 export function Sidebar({ onLogoutClick }: SidebarProps) {
 	return (
 		<nav
