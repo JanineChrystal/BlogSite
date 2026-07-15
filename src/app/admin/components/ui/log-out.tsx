@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/buttons/button";
 import {
 	Dialog,
@@ -10,11 +9,11 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { logoutAction } from "@/lib/actions/auth";
 
 interface LogoutDialogProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	/** Hook up your real sign-out call (clear session/cookies, call API, etc.) here. */
 	onConfirm?: () => void;
 }
 
@@ -23,12 +22,12 @@ export function LogoutDialog({
 	onOpenChange,
 	onConfirm,
 }: LogoutDialogProps) {
-	const router = useRouter();
-
-	const handleConfirm = () => {
+	const handleConfirm = async () => {
 		onConfirm?.();
 		onOpenChange(false);
-		router.push("/login");
+
+		// Trigger the server action to securely delete the cookie and redirect
+		await logoutAction();
 	};
 
 	return (

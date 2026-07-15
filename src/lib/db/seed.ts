@@ -1,7 +1,9 @@
+import bcrypt from "bcrypt";
 import * as dotenv from "dotenv";
 
 dotenv.config({ path: ".env.local" });
 
+import { eq } from "drizzle-orm";
 import { aloeIce } from "../data/blog/aloe-ice";
 import { gilmored } from "../data/blog/gilmored";
 import { nosiBalasi } from "../data/blog/nosibalasi";
@@ -12,25 +14,39 @@ async function main() {
 	console.log("Starting database seeding process...");
 
 	const adminUsername = process.env.ADMIN_USERNAME;
-	const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH;
+	const adminPassword = process.env.ADMIN_PASSWORD;
 
 	// Validates that environment variables exist before proceeding
-	if (!adminUsername || !adminPasswordHash) {
+	if (!adminUsername || !adminPassword) {
 		throw new Error(
-			"Missing required ADMIN_USERNAME or ADMIN_PASSWORD_HASH in .env.local",
+			"Missing required ADMIN_USERNAME or ADMIN_PASSWORD in .env.local",
 		);
 	}
 
-	// Inserts admin but ignores the operation if the account already exists
-	await db
-		.insert(admin)
-		.values({
+	// Hashes the plaintext password with a salt round of 10
+	const hashedPassword = await bcrypt.hash(adminPassword, 10);
+
+	// Checks if the admin account already exists in the database
+	const existingAdmins = await db
+		.select()
+		.from(admin)
+		.where(eq(admin.userName, adminUsername));
+
+	if (existingAdmins.length > 0) {
+		// Updates the password hash of the existing admin to avoid foreign key errors
+		await db
+			.update(admin)
+			.set({ passwordHash: hashedPassword })
+			.where(eq(admin.userName, adminUsername));
+	} else {
+		// Inserts a brand new admin account if one was not found
+		await db.insert(admin).values({
 			userName: adminUsername,
-			passwordHash: adminPasswordHash,
+			passwordHash: hashedPassword,
 			themeMode: process.env.ADMIN_THEME_MODE || "dark",
 			accentColor: process.env.ADMIN_ACCENT_COLOR || "zinc",
-		})
-		.onConflictDoNothing();
+		});
+	}
 
 	// Retrieves the admin record to securely get the ID for relationships
 	const adminRecords = await db.select().from(admin);
