@@ -27,7 +27,11 @@ export function LoginForm() {
 				className="w-full border-b border-outline-variant bg-surface-container px-3 py-3 text-on-surface outline-none focus:border-primary-container"
 			/>
 
-			{state.error && <p className="text-sm text-error">{state.error}</p>}
+			{state.error && (
+				<div className="rounded-md border border-red-500/50 bg-red-500/10 p-3 text-sm font-medium text-red-400">
+					{state.error}
+				</div>
+			)}
 
 			<button
 				type="submit"
