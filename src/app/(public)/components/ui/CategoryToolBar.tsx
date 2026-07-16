@@ -19,7 +19,7 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/tempSelect";
+} from "@/components/ui/Select";
 
 interface FilterOption {
 	label: string;

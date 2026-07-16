@@ -3,7 +3,7 @@
 import { Menu, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { SearchBar } from "@/components/ui/tempSearch";
+import { SearchBar } from "@/components/ui/Search";
 import { NAV_CONFIG } from "../../constants/nav";
 
 function categoryHref(slug: string) {

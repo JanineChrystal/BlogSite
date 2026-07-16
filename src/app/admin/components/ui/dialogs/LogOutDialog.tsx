@@ -8,7 +8,7 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/tempDialog";
+} from "@/components/ui/Dialog";
 import { logoutAction } from "@/lib/actions/auth-admin/log-out";
 
 interface LogoutDialogProps {

@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect } from "react";
 import { usePostForm } from "@/app/hooks/usePostForm";
-import { Dialog, DialogContent } from "@/components/ui/tempDialog";
+import { Dialog, DialogContent } from "@/components/ui/Dialog";
 import { createPostAction } from "@/lib/actions/post-management/create-post";
 import { updatePostAction } from "@/lib/actions/post-management/update-post";
 import type { PostActionState } from "@/lib/types/actions";
