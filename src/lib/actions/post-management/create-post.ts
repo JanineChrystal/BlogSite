@@ -4,14 +4,12 @@ import { put } from "@vercel/blob";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { z } from "zod";
 import { CreatePostSchema } from "@/lib/schema/postSchema";
 import type { PostActionState } from "@/lib/types/actions";
 import { db } from "../../db";
 import { admin, posts, postTags, tags } from "../../db/schema";
 
-/**
- * Handles secure post creation validation and database insertion.
- */
 export async function createPostAction(
 	_prevState: PostActionState,
 	formData: FormData,
@@ -20,8 +18,9 @@ export async function createPostAction(
 	const result = CreatePostSchema.safeParse(rawData);
 
 	if (!result.success) {
+		const flattened = z.flattenError(result.error);
 		return {
-			errors: result.error.flatten().fieldErrors,
+			errors: flattened.fieldErrors,
 			success: false,
 		};
 	}
@@ -40,7 +39,11 @@ export async function createPostAction(
 	let finalImageUrl = formData.get("existingFeaturedImage")?.toString() || null;
 
 	if (imageFile && imageFile.size > 0) {
-		const blob = await put(imageFile.name, imageFile, { access: "public" });
+		// Add random suffix to prevent Vercel Blob overwrites and errors
+		const blob = await put(imageFile.name, imageFile, {
+			access: "public",
+			addRandomSuffix: true,
+		});
 		finalImageUrl = blob.url;
 	}
 
@@ -62,7 +65,7 @@ export async function createPostAction(
 			};
 		}
 
-		// Insert post using safe, structured schema bindings and return the new ID
+		// Insert post using safe structured schema bindings and return the new ID
 		const [newPost] = await db
 			.insert(posts)
 			.values({
@@ -117,14 +120,14 @@ export async function createPostAction(
 				}
 			}
 		} catch (tagError) {
-			// Logs the exact tag error to your VS Code terminal without breaking the post creation
+			// Logs the exact tag error to terminal without breaking creation
 			console.error("Post saved, but tags failed to insert:", tagError);
 		}
 
-		// Refresh the UI to show the new post (Admin Interface)
+		// Refresh the UI to show the new post on the Admin Interface
 		revalidatePath("/admin/post-management");
 
-		// Refresh the UI to show the new post (public site)
+		// Refresh the UI to show the new post on the public site
 		revalidatePath("/");
 		return { success: true };
 	} catch (err) {
@@ -132,7 +135,7 @@ export async function createPostAction(
 
 		// Safely verifies that the thrown exception is an Error object
 		if (err instanceof Error) {
-			// Handles unique constraint errors gracefully
+			// Simple comment: Handles unique constraint errors gracefully
 			if (err.message.includes("unique")) {
 				return {
 					errors: { slug: ["A post with this slug already exists."] },
