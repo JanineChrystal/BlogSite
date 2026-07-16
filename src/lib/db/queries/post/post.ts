@@ -1,5 +1,5 @@
-import { db } from "../index";
-import { categories } from "../schema";
+import { db } from "../../index";
+import { categories } from "../../schema";
 
 export async function getAdminPostsList() {
 	// Simple comment: Use the relational API to easily pull in the category and nested tags

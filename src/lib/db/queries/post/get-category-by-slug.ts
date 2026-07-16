@@ -2,7 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { categories, posts } from "@/lib/db/schema";
 import type { Category } from "@/lib/types/post";
-import { CATEGORY_METADATA } from "../../../app/(public)/constants/category-meta";
+import { CATEGORY_METADATA } from "../../../../app/(public)/constants/category-meta";
 
 export async function getCategoryBySlug(
 	slug: string,

@@ -5,7 +5,7 @@ import {
 	getCategoryBySlug,
 	getInitialPostCount,
 	getTagsByCategory,
-} from "@/lib/data";
+} from "@/lib/db/queries/data";
 import { CategoryPostsSection } from "../../components/sections/CategoryPostSection";
 import { HeroSection } from "../../components/sections/HeroSection";
 import type { Tag } from "../../components/ui/CategoryToolBar";

@@ -1,7 +1,7 @@
 import { and, desc, eq, ilike, inArray, or, type SQL, sql } from "drizzle-orm";
-import { db } from "./db/index";
-import { categories, posts, postTags, tags } from "./db/schema";
-import type { Post } from "./types/post";
+import { db } from "../../db/index";
+import { categories, posts, postTags, tags } from "../../db/schema";
+import type { Post } from "../../types/post";
 
 /**
  * This file contains all data-fetching functions.

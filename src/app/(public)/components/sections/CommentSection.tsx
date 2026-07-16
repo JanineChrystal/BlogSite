@@ -5,7 +5,7 @@ import { CommentForm } from "@/app/(public)/components/ui/CommentForm";
 import { CommentThread } from "@/app/(public)/components/ui/CommentThread";
 import { useLazyLoad } from "@/app/hooks/useLazyLoad";
 import { LoadMoreButton } from "@/components/ui/buttons/LoadMoreButton";
-import { fetchMoreComments } from "@/lib/db/queries/get-more-comment";
+import { fetchMoreComments } from "@/lib/db/queries/comment/get-more-comment";
 import type { Comment } from "@/lib/types/post";
 
 interface CommentsSectionProps {

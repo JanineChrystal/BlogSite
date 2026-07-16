@@ -4,7 +4,7 @@ import {
 	getPopularEntertainment,
 	getPopularProductReviews,
 	getWhatsNew,
-} from "@/lib/data";
+} from "@/lib/db/queries/data";
 import { getHomeSections } from "@/lib/types/home";
 import { CategorySection } from "../components/sections/CategorySection";
 import { HeroSection } from "../components/sections/HeroSection";

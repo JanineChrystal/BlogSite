@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { BlogBody } from "@/app/(public)/components/ui/BlogBody";
 import { ReactionPanel } from "@/app/(public)/components/ui/ReactionPanel";
-import { getPostBySlug } from "@/lib/db/queries/get-post-by-slug";
+import { getPostBySlug } from "@/lib/db/queries/post/get-post-by-slug";
 import { formatDate } from "@/lib/utils/format-date";
 import { CommentsSection } from "../../../components/sections/CommentSection";
 import { HeroSection } from "../../../components/sections/HeroSection";

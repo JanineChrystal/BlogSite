@@ -32,7 +32,10 @@ export function LogoutDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="border-outline-variant bg-surface-container text-on-surface">
+			<DialogContent
+				showCloseButton={false}
+				className="border-outline-variant bg-surface-container text-on-surface"
+			>
 				<DialogHeader>
 					<DialogTitle>Log out</DialogTitle>
 					<DialogDescription className="text-on-surface-variant">
