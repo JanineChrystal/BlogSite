@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // Simple comment: 5MB limit
 const ACCEPTED_IMAGE_TYPES = [
 	"image/jpeg",
 	"image/jpg",
@@ -13,7 +13,13 @@ export const PostSchema = z.object({
 	slug: z.string().min(1, "Slug is required."),
 	categoryId: z.string().min(1, "Category is required."),
 	body: z.string().min(1, "Post content cannot be empty."),
-	featuredLink: z.string().url().optional().or(z.literal("")),
+	featuredLink: z
+		.string()
+		.trim()
+		.refine((val) => val === "" || /^https?:\/\//.test(val), {
+			message: "Must be a valid URL starting with http:// or https://",
+		})
+		.optional(),
 	status: z.enum(["draft", "published"]).default("draft"),
 	tags: z.string().optional(),
 	featuredImage: z

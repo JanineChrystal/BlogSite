@@ -1,3 +1,4 @@
+// Simple comment: Location: src/app/admin/components/ui/dialogs/PostFormDialog.tsx
 "use client";
 
 import { useActionState, useEffect } from "react";
@@ -36,7 +37,7 @@ export function PostDialog({
 	const { formData, handleChange } = usePostForm(post, isOpen);
 	const isEditMode = !!post;
 
-	// Safely wrap the server action based on the current mode to satisfy React hook rules
+	// Simple comment: Safely wrap the server action based on the current mode to satisfy React hook rules
 	const actionHandler = async (
 		prevState: PostActionState,
 		formData: FormData,
@@ -79,7 +80,7 @@ export function PostDialog({
 					</div>
 
 					<form action={formAction} id="post-form" className="space-y-8">
-						{/* Pass the ID invisibly when updating an existing post */}
+						{/* Simple comment: Pass the ID invisibly when updating an existing post */}
 						{isEditMode && <input type="hidden" name="id" value={post.id} />}
 
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -88,7 +89,7 @@ export function PostDialog({
 									htmlFor="title"
 									className="block font-label-sm text-label-sm text-on-surface-variant uppercase"
 								>
-									Post Title
+									Post Title <span className="text-red-500">*</span>
 								</label>
 								<input
 									id="title"
@@ -98,7 +99,12 @@ export function PostDialog({
 									// Simple comment: Replaced defaultValue with value from hook
 									value={formData.title}
 									onChange={handleChange}
-									className="w-full bg-[#141414] border border-surface-container-highest text-on-surface font-body-md py-3 px-4 rounded-DEFAULT focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none"
+									// Simple comment: Add dynamic border color based on error state
+									className={`w-full bg-[#141414] border ${
+										state.errors?.title
+											? "border-red-500"
+											: "border-surface-container-highest"
+									} text-on-surface font-body-md py-3 px-4 rounded-DEFAULT focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none`}
 									placeholder="Enter a compelling headline..."
 								/>
 								{state.errors?.title && (
@@ -112,9 +118,16 @@ export function PostDialog({
 									htmlFor="slug"
 									className="block font-label-sm text-label-sm text-on-surface-variant uppercase"
 								>
-									URL Slug
+									URL Slug <span className="text-red-500">*</span>
 								</label>
-								<div className="flex items-center bg-[#141414] rounded-DEFAULT border border-surface-container-highest focus-within:ring-1 focus-within:border-primary-container focus-within:ring-primary-container">
+								<div
+									// Simple comment: Add dynamic border color based on error state
+									className={`flex items-center bg-[#141414] rounded-DEFAULT border ${
+										state.errors?.slug
+											? "border-red-500"
+											: "border-surface-container-highest"
+									} focus-within:ring-1 focus-within:border-primary-container focus-within:ring-primary-container`}
+								>
 									<span className="pl-4 text-on-surface-variant font-body-md select-none">
 										/blog/
 									</span>
@@ -144,7 +157,7 @@ export function PostDialog({
 									htmlFor="categoryId"
 									className="block font-label-sm text-label-sm text-on-surface-variant uppercase"
 								>
-									Category
+									Category <span className="text-red-500">*</span>
 								</label>
 								<select
 									id="categoryId"
@@ -153,7 +166,12 @@ export function PostDialog({
 									// Simple comment: Connected to hook
 									value={formData.categoryId}
 									onChange={handleChange}
-									className="w-full bg-[#141414] border border-surface-container-highest text-on-surface font-body-md py-3 px-4 rounded-DEFAULT focus:ring-1 focus:ring-primary-container focus:border-primary-container appearance-none outline-none"
+									// Simple comment: Add dynamic border color based on error state
+									className={`w-full bg-[#141414] border ${
+										state.errors?.categoryId
+											? "border-red-500"
+											: "border-surface-container-highest"
+									} text-on-surface font-body-md py-3 px-4 rounded-DEFAULT focus:ring-1 focus:ring-primary-container focus:border-primary-container appearance-none outline-none`}
 								>
 									<option value="" disabled>
 										Select...
@@ -185,10 +203,15 @@ export function PostDialog({
 									id="featuredLink"
 									name="featuredLink"
 									type="text"
-									// Connected to hook
+									// Simple comment: Connected to hook
 									value={formData.featuredLink}
 									onChange={handleChange}
-									className="w-full bg-[#141414] border border-surface-container-highest text-on-surface font-body-md py-3 px-4 rounded-DEFAULT focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none"
+									// Simple comment: Add dynamic border color based on error state
+									className={`w-full bg-[#141414] border ${
+										state.errors?.featuredLink
+											? "border-red-500"
+											: "border-surface-container-highest"
+									} text-on-surface font-body-md py-3 px-4 rounded-DEFAULT focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none`}
 									placeholder="https://shopee.ph/..."
 								/>
 								{state.errors?.featuredLink && (
@@ -248,7 +271,7 @@ export function PostDialog({
 									htmlFor="body"
 									className="block font-label-sm text-label-sm text-on-surface-variant uppercase"
 								>
-									Content (Markdown)
+									Content (Markdown) <span className="text-red-500">*</span>
 								</label>
 							</div>
 							<textarea
@@ -259,7 +282,12 @@ export function PostDialog({
 								// Simple comment: Connected to hook
 								value={formData.body}
 								onChange={handleChange}
-								className="w-full bg-[#141414] border border-surface-container-highest rounded-lg p-6 text-on-surface font-mono text-sm focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none transition-all resize-none h-64 md:h-96"
+								// Simple comment: Add dynamic border color based on error state
+								className={`w-full bg-[#141414] border ${
+									state.errors?.body
+										? "border-red-500"
+										: "border-surface-container-highest"
+								} rounded-lg p-6 text-on-surface font-mono text-sm focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none transition-all resize-none h-64 md:h-96`}
 								placeholder="Write your story here..."
 							/>
 							{state.errors?.body && (
