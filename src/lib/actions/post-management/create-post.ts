@@ -123,6 +123,9 @@ export async function createPostAction(
 
 		// Refresh the UI to show the new post
 		revalidatePath("/admin/posts");
+
+		// Refresh the UI to show the new post
+		revalidatePath("/blog");
 		return { success: true };
 	} catch (err) {
 		console.error("Database failed to create post:", err);

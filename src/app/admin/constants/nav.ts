@@ -26,12 +26,6 @@ export const NAV_ITEMS: NavItem[] = [
 /** Secondary navigation, pinned to the bottom of the sidebar. */
 export const BOTTOM_NAV_ITEMS: NavItem[] = [
 	{
-		id: "settings",
-		label: "Account Settings",
-		href: "/admin/settings",
-		icon: Settings,
-	},
-	{
 		id: LOGOUT_ITEM_ID,
 		label: "Logout",
 		href: "#",
