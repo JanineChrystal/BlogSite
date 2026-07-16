@@ -6,7 +6,7 @@ import type * as React from "react";
 import { cn } from "@/lib/utils/utils";
 import { Button } from "../buttons/Button";
 import { Input } from "./Input";
-import { Textarea } from "./tempTextArea";
+import { TextArea } from "./TextArea";
 
 // Fixed: Changed from a div to a fieldset to provide native group semantics
 function InputGroup({ className, ...props }: React.ComponentProps<"fieldset">) {
@@ -146,7 +146,7 @@ function InputGroupTextarea({
 	...props
 }: React.ComponentProps<"textarea">) {
 	return (
-		<Textarea
+		<TextArea
 			data-slot="input-group-control"
 			className={cn(
 				"flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent",
