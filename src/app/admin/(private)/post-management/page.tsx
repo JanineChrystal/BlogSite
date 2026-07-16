@@ -1,8 +1,8 @@
-import { PostsTable } from "@/app/admin/components/tables/post-table";
+import { PostsTable } from "@/app/admin/components/tables/PostTable";
 import {
 	getAdminPostsList,
 	getCategoriesForDropdown,
-} from "@/lib/db/queries/post";
+} from "@/lib/db/queries/post/post";
 
 export default async function PostManagementPage() {
 	// Concurrent fetching for optimal server performance
