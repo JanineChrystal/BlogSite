@@ -1,6 +1,9 @@
 "use server";
 
-import { type SearchResult, searchPosts as searchPostsDb } from "@/lib/data";
+import {
+	type SearchResult,
+	searchPosts as searchPostsDb,
+} from "@/lib/db/queries/data";
 
 /**
  * Server Action to search for posts.

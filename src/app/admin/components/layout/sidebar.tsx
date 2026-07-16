@@ -1,4 +1,4 @@
-import { SidebarContent } from "./sidebar-content";
+import { SidebarContent } from "./SideBarContent";
 
 interface SidebarProps {
 	onLogoutClick: () => void;

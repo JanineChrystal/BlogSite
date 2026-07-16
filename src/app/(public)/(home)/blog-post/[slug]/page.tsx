@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
-import { BlogBody } from "@/app/(public)/components/ui/blog-body";
-import { ReactionPanel } from "@/app/(public)/components/ui/reaction-panel";
-import { getPostBySlug } from "@/lib/data/post";
+import { BlogBody } from "@/app/(public)/components/ui/BlogBody";
+import { ReactionPanel } from "@/app/(public)/components/ui/ReactionPanel";
+import { getPostBySlug } from "@/lib/db/queries/post/get-post-by-slug";
 import { formatDate } from "@/lib/utils/format-date";
-import { CategoryToolbar } from "../../../components/sections/category-toolbar";
-import { CommentsSection } from "../../../components/sections/comment-section";
-import { HeroSection } from "../../../components/sections/hero";
+import { CommentsSection } from "../../../components/sections/CommentSection";
+import { HeroSection } from "../../../components/sections/HeroSection";
+import { CategoryToolbar } from "../../../components/ui/CategoryToolBar";
 
 interface PostPageProps {
 	params: Promise<{ slug: string }>;

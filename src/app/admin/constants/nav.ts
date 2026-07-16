@@ -1,10 +1,4 @@
-import {
-	FileText,
-	LayoutDashboard,
-	LogOut,
-	MessagesSquare,
-	Settings,
-} from "lucide-react";
+import { FileText, LogOut, MessagesSquare, Settings } from "lucide-react";
 import type { NavItem } from "@/lib/types/nav";
 
 /** Id used to identify the logout entry so the sidebar can open a dialog instead of routing. */
@@ -15,12 +9,6 @@ export const LOGOUT_ITEM_ID = "logout";
  * To add/remove/reorder a menu item, edit this array only.
  */
 export const NAV_ITEMS: NavItem[] = [
-	{
-		id: "dashboard",
-		label: "Home Dashboard",
-		href: "/admin/dashboard",
-		icon: LayoutDashboard,
-	},
 	{
 		id: "posts",
 		label: "Manage Posts",
@@ -37,12 +25,6 @@ export const NAV_ITEMS: NavItem[] = [
 
 /** Secondary navigation, pinned to the bottom of the sidebar. */
 export const BOTTOM_NAV_ITEMS: NavItem[] = [
-	{
-		id: "settings",
-		label: "Account Settings",
-		href: "/admin/settings",
-		icon: Settings,
-	},
 	{
 		id: LOGOUT_ITEM_ID,
 		label: "Logout",
