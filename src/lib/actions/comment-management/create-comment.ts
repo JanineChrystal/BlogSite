@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { comments } from "@/lib/db/schema";
-import { CommentSchema } from "@/lib/schema/comment";
+import { CommentSchema } from "@/lib/schema/commentSchema";
 import type { CommentFormState } from "@/lib/types/comment";
 
 export async function addComment(

@@ -3,32 +3,39 @@
 import { put } from "@vercel/blob";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { UpdatePostSchema } from "@/lib/schema/postSchema";
+import type { PostActionState } from "@/lib/types/actions";
 import { db } from "../../db";
 import { posts, postTags, tags } from "../../db/schema";
-
-export type ActionState = {
-	error: string | null;
-	success: boolean;
-};
 
 /**
  * Handles post update.
  */
 export async function updatePostAction(
-	_prevState: ActionState,
+	_prevState: PostActionState,
 	formData: FormData,
-): Promise<ActionState> {
-	try {
-		const id = formData.get("id") as string;
-		const title = formData.get("title") as string;
-		const slug = formData.get("slug") as string;
-		const categoryId = formData.get("categoryId") as string;
-		const featuredLink = formData.get("featuredLink") as string;
-		const body = formData.get("body") as string;
-		const status = formData.get("status") as string;
+): Promise<PostActionState> {
+	const rawData = Object.fromEntries(formData.entries());
+	const result = UpdatePostSchema.safeParse(rawData);
 
-		// Extract tags input separately
-		const tagsInput = formData.get("tags") as string;
+	if (!result.success) {
+		return {
+			errors: result.error.flatten().fieldErrors,
+			success: false,
+		};
+	}
+
+	try {
+		const {
+			id,
+			title,
+			slug,
+			categoryId,
+			featuredLink,
+			body,
+			status,
+			tags: tagsInput,
+		} = result.data;
 
 		// Grab both the raw File and hidden existing URL
 		const imageFile = formData.get("featuredImage") as File | null;
@@ -37,13 +44,8 @@ export async function updatePostAction(
 
 		// If a physical file was actually uploaded, save it to the hard drive
 		if (imageFile && imageFile.size > 0) {
-			const blob = await put(imageFile.name, imageFile, {
-				access: "public",
-			});
+			const blob = await put(imageFile.name, imageFile, { access: "public" });
 			finalImageUrl = blob.url;
-		}
-		if (!id) {
-			return { error: "Post ID is missing.", success: false };
 		}
 
 		await db
@@ -106,19 +108,19 @@ export async function updatePostAction(
 
 		revalidatePath("/admin/posts");
 
-		return { success: true, error: null };
+		return { success: true };
 	} catch (err) {
 		console.error("Failed to update post:", err);
 		if (err instanceof Error) {
 			if (err.message.includes("unique")) {
 				return {
-					error: "A post with this slug already exists.",
+					errors: { slug: ["A post with this slug already exists."] },
 					success: false,
 				};
 			}
 		}
 		return {
-			error: "Failed to update post. Please try again.",
+			errors: { _form: ["Failed to update post. Please try again."] },
 			success: false,
 		};
 	}

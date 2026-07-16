@@ -4,40 +4,44 @@ import { put } from "@vercel/blob";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { CreatePostSchema } from "@/lib/schema/postSchema";
+import type { PostActionState } from "@/lib/types/actions";
 import { db } from "../../db";
 import { admin, posts, postTags, tags } from "../../db/schema";
-
-export type ActionState = {
-	error: string | null;
-	success: boolean;
-};
 
 /**
  * Handles secure post creation validation and database insertion.
  */
 export async function createPostAction(
-	_prevState: ActionState,
+	_prevState: PostActionState,
 	formData: FormData,
-): Promise<ActionState> {
-	const title = formData.get("title")?.toString();
-	const slug = formData.get("slug")?.toString();
-	const categoryId = formData.get("categoryId")?.toString();
-	const body = formData.get("body")?.toString();
-	const featuredLink = formData.get("featuredLink")?.toString() || null;
-	const status = formData.get("status")?.toString() || "draft";
-	const tagsInput = formData.get("tags")?.toString();
+): Promise<PostActionState> {
+	const rawData = Object.fromEntries(formData.entries());
+	const result = CreatePostSchema.safeParse(rawData);
+
+	if (!result.success) {
+		return {
+			errors: result.error.flatten().fieldErrors,
+			success: false,
+		};
+	}
+
+	const {
+		title,
+		slug,
+		categoryId,
+		body,
+		featuredLink,
+		status,
+		tags: tagsInput,
+	} = result.data;
+
 	const imageFile = formData.get("featuredImage") as File | null;
 	let finalImageUrl = formData.get("existingFeaturedImage")?.toString() || null;
 
 	if (imageFile && imageFile.size > 0) {
-		const blob = await put(imageFile.name, imageFile, {
-			access: "public",
-		});
+		const blob = await put(imageFile.name, imageFile, { access: "public" });
 		finalImageUrl = blob.url;
-	}
-	// Validates required inputs
-	if (!title || !slug || !categoryId || !body) {
-		return { error: "Please fill out all required fields.", success: false };
 	}
 
 	try {
@@ -46,13 +50,16 @@ export async function createPostAction(
 		const sessionToken = cookieStore.get("admin_session")?.value;
 
 		if (!sessionToken) {
-			return { error: "Unauthorized access.", success: false };
+			return { errors: { _form: ["Unauthorized access."] }, success: false };
 		}
 
 		// Lookups the admin's unique record
 		const [activeAdmin] = await db.select().from(admin).limit(1);
 		if (!activeAdmin) {
-			return { error: "Admin account not found.", success: false };
+			return {
+				errors: { _form: ["Admin account not found."] },
+				success: false,
+			};
 		}
 
 		// Insert post using safe, structured schema bindings and return the new ID
@@ -66,7 +73,7 @@ export async function createPostAction(
 				body,
 				featuredImage: finalImageUrl,
 				featuredLink,
-				status: status as "draft" | "published",
+				status,
 			})
 			.returning({ id: posts.id });
 
@@ -110,13 +117,13 @@ export async function createPostAction(
 				}
 			}
 		} catch (tagError) {
-			// Simple comment: Logs the exact tag error to your VS Code terminal without breaking the post creation
+			// Logs the exact tag error to your VS Code terminal without breaking the post creation
 			console.error("Post saved, but tags failed to insert:", tagError);
 		}
 
 		// Refresh the UI to show the new post
 		revalidatePath("/admin/posts");
-		return { error: null, success: true };
+		return { success: true };
 	} catch (err) {
 		console.error("Database failed to create post:", err);
 
@@ -125,14 +132,14 @@ export async function createPostAction(
 			// Handles unique constraint errors gracefully
 			if (err.message.includes("unique")) {
 				return {
-					error: "A post with this slug already exists.",
+					errors: { slug: ["A post with this slug already exists."] },
 					success: false,
 				};
 			}
 		}
 
 		return {
-			error: "Failed to create post. Please try again.",
+			errors: { _form: ["Failed to create post. Please try again."] },
 			success: false,
 		};
 	}

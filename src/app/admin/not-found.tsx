@@ -134,10 +134,10 @@ export default function NotFoundPage() {
 
 			{/* Main Application Reset Escape Button */}
 			<Link
-				href="/admin/dashboard"
+				href="/admin/post-management"
 				className="px-6 py-3 bg-slate-900 text-white font-medium rounded-xl hover:bg-slate-800 transition-colors shadow-sm"
 			>
-				Back to Dashboard
+				Back to Home
 			</Link>
 		</main>
 	);

@@ -3,11 +3,9 @@
 import { useActionState, useEffect } from "react";
 import { usePostForm } from "@/app/hooks/usePostForm";
 import { Dialog, DialogContent } from "@/components/ui/Dialog";
-import {
-	type ActionState,
-	createPostAction,
-} from "@/lib/actions/post-management/create-post";
+import { createPostAction } from "@/lib/actions/post-management/create-post";
 import { updatePostAction } from "@/lib/actions/post-management/update-post";
+import type { PostActionState } from "@/lib/types/actions";
 
 import { ImageUpload } from "../../forms/ImageUpload";
 
@@ -39,7 +37,10 @@ export function PostDialog({
 	const isEditMode = !!post;
 
 	// Safely wrap the server action based on the current mode to satisfy React hook rules
-	const actionHandler = async (prevState: ActionState, formData: FormData) => {
+	const actionHandler = async (
+		prevState: PostActionState,
+		formData: FormData,
+	) => {
 		if (isEditMode) {
 			return updatePostAction(prevState, formData);
 		}
@@ -47,7 +48,7 @@ export function PostDialog({
 	};
 
 	const [state, formAction, isPending] = useActionState(actionHandler, {
-		error: null,
+		errors: {},
 		success: false,
 	});
 
@@ -100,6 +101,11 @@ export function PostDialog({
 									className="w-full bg-[#141414] border border-surface-container-highest text-on-surface font-body-md py-3 px-4 rounded-DEFAULT focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none"
 									placeholder="Enter a compelling headline..."
 								/>
+								{state.errors?.title && (
+									<p className="mt-1 text-sm text-red-500">
+										{state.errors.title.join(", ")}
+									</p>
+								)}
 							</div>
 							<div className="space-y-2">
 								<label
@@ -124,6 +130,11 @@ export function PostDialog({
 										placeholder="my-awesome-post"
 									/>
 								</div>
+								{state.errors?.slug && (
+									<p className="mt-1 text-sm text-red-500">
+										{state.errors.slug.join(", ")}
+									</p>
+								)}
 							</div>
 						</div>
 
@@ -157,6 +168,11 @@ export function PostDialog({
 										</option>
 									))}
 								</select>
+								{state.errors?.categoryId && (
+									<p className="mt-1 text-sm text-red-500">
+										{state.errors.categoryId.join(", ")}
+									</p>
+								)}
 							</div>
 							<div className="space-y-2">
 								<label
@@ -175,6 +191,11 @@ export function PostDialog({
 									className="w-full bg-[#141414] border border-surface-container-highest text-on-surface font-body-md py-3 px-4 rounded-DEFAULT focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none"
 									placeholder="https://shopee.ph/..."
 								/>
+								{state.errors?.featuredLink && (
+									<p className="mt-1 text-sm text-red-500">
+										{state.errors.featuredLink.join(", ")}
+									</p>
+								)}
 							</div>
 						</div>
 
@@ -191,6 +212,11 @@ export function PostDialog({
 								name="existingFeaturedImage"
 								value={formData.featuredImage || ""}
 							/>
+							{state.errors?.featuredImage && (
+								<p className="mt-1 text-sm text-red-500">
+									{state.errors.featuredImage.join(", ")}
+								</p>
+							)}
 						</div>
 
 						<div className="space-y-2">
@@ -209,6 +235,11 @@ export function PostDialog({
 								className="w-full bg-[#141414] border border-surface-container-highest text-on-surface font-body-md py-3 px-4 rounded-DEFAULT focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none"
 								placeholder="tech, lifestyle, web development..."
 							/>
+							{state.errors?.tags && (
+								<p className="mt-1 text-sm text-red-500">
+									{state.errors.tags.join(", ")}
+								</p>
+							)}
 						</div>
 
 						<div className="space-y-2">
@@ -231,11 +262,16 @@ export function PostDialog({
 								className="w-full bg-[#141414] border border-surface-container-highest rounded-lg p-6 text-on-surface font-mono text-sm focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none transition-all resize-none h-64 md:h-96"
 								placeholder="Write your story here..."
 							/>
+							{state.errors?.body && (
+								<p className="mt-1 text-sm text-red-500">
+									{state.errors.body.join(", ")}
+								</p>
+							)}
 						</div>
 
-						{state.error && (
+						{state.errors?._form && (
 							<div className="rounded-md border border-red-500/50 bg-red-500/10 p-3 text-sm font-medium text-red-400">
-								{state.error}
+								{state.errors._form.join(", ")}
 							</div>
 						)}
 					</form>
