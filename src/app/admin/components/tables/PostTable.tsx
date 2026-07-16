@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLazyLoad } from "@/app/hooks/useLazyLoad";
 import { type SortColumn, usePostSort } from "@/app/hooks/usePostSort";
 import { LoadMoreButton } from "@/components/ui/buttons/LoadMoreButton";
-import { fetchMoreAdminPosts } from "@/lib/actions/post";
+import { fetchMoreAdminPosts } from "@/lib/db/queries/get-more-post";
 import { POST_TABLE_HEADERS } from "../../constants/table-headers";
 import { DeletePostButton } from "../ui/buttons/DeleteButton";
 import { EditPostButton } from "../ui/buttons/EditButton";

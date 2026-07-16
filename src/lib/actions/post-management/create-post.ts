@@ -1,0 +1,139 @@
+"use server";
+
+import { put } from "@vercel/blob";
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+import { db } from "../../db";
+import { admin, posts, postTags, tags } from "../../db/schema";
+
+export type ActionState = {
+	error: string | null;
+	success: boolean;
+};
+
+/**
+ * Handles secure post creation validation and database insertion.
+ */
+export async function createPostAction(
+	_prevState: ActionState,
+	formData: FormData,
+): Promise<ActionState> {
+	const title = formData.get("title")?.toString();
+	const slug = formData.get("slug")?.toString();
+	const categoryId = formData.get("categoryId")?.toString();
+	const body = formData.get("body")?.toString();
+	const featuredLink = formData.get("featuredLink")?.toString() || null;
+	const status = formData.get("status")?.toString() || "draft";
+	const tagsInput = formData.get("tags")?.toString();
+	const imageFile = formData.get("featuredImage") as File | null;
+	let finalImageUrl = formData.get("existingFeaturedImage")?.toString() || null;
+
+	if (imageFile && imageFile.size > 0) {
+		const blob = await put(imageFile.name, imageFile, {
+			access: "public",
+		});
+		finalImageUrl = blob.url;
+	}
+	// Validates required inputs
+	if (!title || !slug || !categoryId || !body) {
+		return { error: "Please fill out all required fields.", success: false };
+	}
+
+	try {
+		// Identifies current user using the secure HTTP-only session cookie
+		const cookieStore = await cookies();
+		const sessionToken = cookieStore.get("admin_session")?.value;
+
+		if (!sessionToken) {
+			return { error: "Unauthorized access.", success: false };
+		}
+
+		// Lookups the admin's unique record
+		const [activeAdmin] = await db.select().from(admin).limit(1);
+		if (!activeAdmin) {
+			return { error: "Admin account not found.", success: false };
+		}
+
+		// Insert post using safe, structured schema bindings and return the new ID
+		const [newPost] = await db
+			.insert(posts)
+			.values({
+				userId: activeAdmin.userId,
+				categoryId: categoryId,
+				title,
+				slug,
+				body,
+				featuredImage: finalImageUrl,
+				featuredLink,
+				status: status as "draft" | "published",
+			})
+			.returning({ id: posts.id });
+
+		// Handles relational tag insertion if tags were provided
+		try {
+			if (tagsInput && tagsInput.trim() !== "") {
+				const tagNames = tagsInput
+					.split(",")
+					.map((tag) => tag.trim())
+					.filter(Boolean);
+
+				for (const tagName of tagNames) {
+					const tagSlug = tagName
+						.toLowerCase()
+						.replace(/[^a-z0-9]+/g, "-")
+						.replace(/(^-|-$)+/g, "");
+
+					let currentTag = await db.query.tags.findFirst({
+						where: eq(tags.slug, tagSlug),
+					});
+
+					if (!currentTag) {
+						const [insertedTag] = await db
+							.insert(tags)
+							.values({
+								name: tagName,
+								slug: tagSlug,
+							})
+							.returning();
+						currentTag = insertedTag;
+					}
+
+					const shortPostId = newPost.id.substring(0, 10);
+					const shortTagId = currentTag.tagId.substring(0, 10);
+
+					await db.insert(postTags).values({
+						postId: newPost.id,
+						tagId: currentTag.tagId,
+						slug: `${shortPostId}-${shortTagId}`,
+					});
+				}
+			}
+		} catch (tagError) {
+			// Simple comment: Logs the exact tag error to your VS Code terminal without breaking the post creation
+			console.error("Post saved, but tags failed to insert:", tagError);
+		}
+
+		// Refresh the UI to show the new post
+		revalidatePath("/admin/posts");
+		return { error: null, success: true };
+	} catch (err) {
+		console.error("Database failed to create post:", err);
+
+		// Safely verifies that the thrown exception is an Error object
+		if (err instanceof Error) {
+			// Handles unique constraint errors gracefully
+			if (err.message.includes("unique")) {
+				return {
+					error: "A post with this slug already exists.",
+					success: false,
+				};
+			}
+		}
+
+		return {
+			error: "Failed to create post. Please try again.",
+			success: false,
+		};
+	}
+}

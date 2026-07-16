@@ -6,8 +6,8 @@ import { Dialog, DialogContent } from "@/components/ui/Dialog";
 import {
 	type ActionState,
 	createPostAction,
-	updatePostAction,
-} from "@/lib/actions/post";
+} from "@/lib/actions/post-management/create-post";
+import { updatePostAction } from "@/lib/actions/post-management/update-post";
 
 import { ImageUpload } from "../../forms/ImageUpload";
 

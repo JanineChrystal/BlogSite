@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { deletePostAction } from "@/lib/actions/post";
+import { deletePostAction } from "@/lib/actions/post-management/delete-post";
 
 interface DeletePostButtonProps {
 	postId: string;

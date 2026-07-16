@@ -9,7 +9,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/Dialog";
-import { logoutAction } from "@/lib/actions/auth";
+import { logoutAction } from "@/lib/actions/auth-admin/log-out";
 
 interface LogoutDialogProps {
 	open: boolean;

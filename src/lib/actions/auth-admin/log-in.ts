@@ -51,10 +51,3 @@ export async function loginAction(
 
 	redirect("/admin/dashboard");
 }
-
-export async function logoutAction() {
-	const cookieStore = await cookies();
-	cookieStore.delete("admin_session");
-
-	redirect("/admin/log-in");
-}

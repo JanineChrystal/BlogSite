@@ -2,7 +2,7 @@
 
 import { Droplet, Flame, Leaf, type LucideIcon, Wind } from "lucide-react";
 import { useState, useTransition } from "react";
-import { addReaction } from "@/lib/actions/reaction";
+import { addReaction } from "@/lib/actions/forms/add-reaction";
 import type { Reaction } from "@/lib/types/post";
 import { cn } from "@/lib/utils/utils";
 
