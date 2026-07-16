@@ -3,14 +3,12 @@
 import { put } from "@vercel/blob";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { UpdatePostSchema } from "@/lib/schema/postSchema";
 import type { PostActionState } from "@/lib/types/actions";
 import { db } from "../../db";
 import { posts, postTags, tags } from "../../db/schema";
 
-/**
- * Handles post update.
- */
 export async function updatePostAction(
 	_prevState: PostActionState,
 	formData: FormData,
@@ -19,8 +17,9 @@ export async function updatePostAction(
 	const result = UpdatePostSchema.safeParse(rawData);
 
 	if (!result.success) {
+		const flattened = z.flattenError(result.error);
 		return {
-			errors: result.error.flatten().fieldErrors,
+			errors: flattened.fieldErrors,
 			success: false,
 		};
 	}
@@ -42,9 +41,12 @@ export async function updatePostAction(
 		let finalImageUrl =
 			formData.get("existingFeaturedImage")?.toString() || null;
 
-		// If a physical file was actually uploaded, save it to the hard drive
+		// If a physical file was actually uploaded save it to the blob storage
 		if (imageFile && imageFile.size > 0) {
-			const blob = await put(imageFile.name, imageFile, { access: "public" });
+			const blob = await put(imageFile.name, imageFile, {
+				access: "public",
+				addRandomSuffix: true,
+			});
 			finalImageUrl = blob.url;
 		}
 
@@ -58,7 +60,6 @@ export async function updatePostAction(
 				featuredImage: finalImageUrl,
 				body,
 				status,
-				// Update the timestamp to know when it was last modified
 				updatedAt: new Date(),
 			})
 			.where(eq(posts.id, id));
@@ -106,10 +107,10 @@ export async function updatePostAction(
 			}
 		}
 
-		// Refresh the UI to show the new post (Admin Interface)
+		// Refresh the UI to show the updated post on the Admin Interface
 		revalidatePath("/admin/post-management");
 
-		// Refresh the UI to show the new post (public site)
+		// Refresh the UI to show the updated post on the public site
 		revalidatePath("/");
 
 		return { success: true };
