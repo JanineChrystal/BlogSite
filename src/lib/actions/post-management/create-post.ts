@@ -121,11 +121,11 @@ export async function createPostAction(
 			console.error("Post saved, but tags failed to insert:", tagError);
 		}
 
-		// Refresh the UI to show the new post
-		revalidatePath("/admin/posts");
+		// Refresh the UI to show the new post (Admin Interface)
+		revalidatePath("/admin/post-management");
 
-		// Refresh the UI to show the new post
-		revalidatePath("/blog");
+		// Refresh the UI to show the new post (public site)
+		revalidatePath("/");
 		return { success: true };
 	} catch (err) {
 		console.error("Database failed to create post:", err);

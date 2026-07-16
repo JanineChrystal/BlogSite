@@ -106,7 +106,11 @@ export async function updatePostAction(
 			}
 		}
 
-		revalidatePath("/admin/posts");
+		// Refresh the UI to show the new post (Admin Interface)
+		revalidatePath("/admin/post-management");
+
+		// Refresh the UI to show the new post (public site)
+		revalidatePath("/");
 
 		return { success: true };
 	} catch (err) {
