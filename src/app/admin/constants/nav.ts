@@ -1,4 +1,4 @@
-import { FileText, LogOut, MessagesSquare, Settings } from "lucide-react";
+import { FileText, LogOut, MessagesSquare } from "lucide-react";
 import type { NavItem } from "@/lib/types/nav";
 
 /** Id used to identify the logout entry so the sidebar can open a dialog instead of routing. */
