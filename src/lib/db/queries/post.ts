@@ -1,23 +1,34 @@
-import { desc, eq } from "drizzle-orm";
 import { db } from "../index";
-import { categories, posts } from "../schema";
+import { categories } from "../schema";
 
 export async function getAdminPostsList() {
-	// Fetches all real posts and attach their corresponding category name
-	const result = await db
-		.select({
-			id: posts.id,
-			title: posts.title,
-			slug: posts.slug,
-			status: posts.status,
-			createdAt: posts.createdAt,
-			categoryName: categories.name,
-		})
-		.from(posts)
-		.leftJoin(categories, eq(posts.categoryId, categories.categoryId))
-		.orderBy(desc(posts.createdAt));
+	// Simple comment: Use the relational API to easily pull in the category and nested tags
+	const allPosts = await db.query.posts.findMany({
+		orderBy: (posts, { desc }) => [desc(posts.createdAt)],
+		with: {
+			category: true,
+			postTags: {
+				with: {
+					tag: true,
+				},
+			},
+		},
+	});
 
-	return result;
+	// Simple comment: Map the result to perfectly match the PostItem interface
+	return allPosts.map((post) => ({
+		id: post.id,
+		title: post.title,
+		slug: post.slug,
+		status: post.status,
+		createdAt: post.createdAt,
+		categoryId: post.categoryId,
+		categoryName: post.category?.name || "Uncategorized",
+		body: post.body,
+		featuredLink: post.featuredLink,
+		featuredImage: post.featuredImage,
+		tags: post.postTags.map((pt) => pt.tag.name).join(", ") || null,
+	}));
 }
 
 /**

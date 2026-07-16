@@ -1,7 +1,5 @@
 "use server";
 
-import { writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { put } from "@vercel/blob";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -166,15 +164,10 @@ export async function updatePostAction(
 
 		// If a physical file was actually uploaded, save it to the hard drive
 		if (imageFile && imageFile.size > 0) {
-			const bytes = await imageFile.arrayBuffer();
-			const buffer = Buffer.from(bytes);
-
-			// Simple comment: Strip spaces and add a timestamp so files with the same name don't overwrite each other
-			const uniqueName = `${Date.now()}-${imageFile.name.replace(/\s+/g, "-")}`;
-			const filePath = join(process.cwd(), "public", "uploads", uniqueName);
-
-			await writeFile(filePath, buffer);
-			finalImageUrl = `/uploads/${uniqueName}`;
+			const blob = await put(imageFile.name, imageFile, {
+				access: "public",
+			});
+			finalImageUrl = blob.url;
 		}
 		if (!id) {
 			return { error: "Post ID is missing.", success: false };
@@ -226,10 +219,13 @@ export async function updatePostAction(
 						currentTag = insertedTag;
 					}
 
+					const shortPostId = id.substring(0, 10);
+					const shortTagId = currentTag.tagId.substring(0, 10);
+
 					await db.insert(postTags).values({
 						postId: id,
 						tagId: currentTag.tagId,
-						slug: `${id}-${currentTag.tagId}`,
+						slug: `${shortPostId}-${shortTagId}`,
 					});
 				}
 			}
@@ -288,7 +284,7 @@ export async function fetchMoreAdminPosts(
 			throw new Error("Unauthorized access.");
 		}
 
-		// Simple comment: Fetch the next chunk by skipping the offsetAmount
+		// Fetch the next chunk by skipping the offsetAmount
 		const pagedPosts = await db.query.posts.findMany({
 			limit: limitAmount,
 			offset: offsetAmount,
@@ -303,7 +299,7 @@ export async function fetchMoreAdminPosts(
 			},
 		});
 
-		// Simple comment: Map the raw database result to perfectly match your frontend PostItem interface
+		// Map the raw database result to perfectly match your frontend PostItem interface
 		return pagedPosts.map((post) => ({
 			id: post.id,
 			title: post.title,
@@ -328,13 +324,13 @@ export async function fetchMoreAdminPosts(
  */
 export async function createInlineCategory(name: string) {
 	try {
-		// Simple comment: Automatically generate a URL-friendly slug from the category name
+		//  Automatically generate a URL-friendly slug from the category name
 		const generatedSlug = name
 			.toLowerCase()
 			.replace(/[^a-z0-9]+/g, "-")
 			.replace(/(^-|-$)+/g, "");
 
-		// Simple comment: Insert both the name and the generated slug
+		// Insert both the name and the generated slug
 		const [newCategory] = await db
 			.insert(categories)
 			.values({
@@ -342,7 +338,7 @@ export async function createInlineCategory(name: string) {
 				slug: generatedSlug,
 			})
 			.returning({
-				// Simple comment: Fixed this to use categoryId to match your exact Drizzle schema
+				// Fixed this to use categoryId to match your exact Drizzle schema
 				categoryId: categories.categoryId,
 				name: categories.name,
 			});
