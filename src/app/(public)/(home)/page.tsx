@@ -6,8 +6,8 @@ import {
 	getWhatsNew,
 } from "@/lib/data";
 import { getHomeSections } from "@/lib/types/home";
-import { CategorySection } from "../components/sections/category";
-import { HeroSection } from "../components/sections/hero";
+import { CategorySection } from "../components/sections/CategorySection";
+import { HeroSection } from "../components/sections/HeroSection";
 
 const HomePage = async () => {
 	// Fetch data for all sections in parallel using the Drizzle ORM functions.

@@ -1,7 +1,7 @@
-import { LoadMoreButton } from "@/components/ui/buttons/load-more-button";
+import { LoadMoreButton } from "@/components/ui/buttons/LoadMoreButton";
 import type { Post } from "@/lib/types/post";
-import { BlogGrid } from "./blog-grid";
-import { CategoryToolbar, type Tag } from "./category-toolbar";
+import { BlogGrid } from "../ui/BlogGrid";
+import { CategoryToolbar, type Tag } from "../ui/CategoryToolBar";
 
 interface CategoryPostsSectionProps {
 	categoryName: string;

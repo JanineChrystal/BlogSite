@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/buttons/button";
+import { Button } from "@/components/ui/buttons/Button";
 import {
 	Dialog,
 	DialogContent,
@@ -8,7 +8,7 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
 import { logoutAction } from "@/lib/actions/auth";
 
 interface LogoutDialogProps {

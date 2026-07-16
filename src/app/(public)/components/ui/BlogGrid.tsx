@@ -1,4 +1,4 @@
-import { BlogCard } from "@/components/ui/cards/blog-card";
+import { BlogCard } from "@/components/ui/cards/BlogCard";
 import type { Post } from "@/lib/types/post";
 
 interface BlogGridProps {

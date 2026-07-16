@@ -3,12 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useLazyLoad } from "@/app/hooks/useLazyLoad";
 import { type SortColumn, usePostSort } from "@/app/hooks/usePostSort";
-import { LoadMoreButton } from "@/components/ui/buttons/load-more-button";
+import { LoadMoreButton } from "@/components/ui/buttons/LoadMoreButton";
 import { fetchMoreAdminPosts } from "@/lib/actions/post";
 import { POST_TABLE_HEADERS } from "../../constants/table-headers";
-import { DeletePostButton } from "../ui/buttons/delete-button";
-import { EditPostButton } from "../ui/buttons/edit-button";
-import { PostDialog } from "../ui/dialogs/post-dialog";
+import { DeletePostButton } from "../ui/buttons/DeleteButton";
+import { EditPostButton } from "../ui/buttons/EditButton";
+import { PostDialog } from "../ui/dialogs/PostFormDialog";
 
 interface PostItem {
 	id: string;

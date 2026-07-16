@@ -1,4 +1,4 @@
-import { PostsTable } from "@/app/admin/components/tables/post-table";
+import { PostsTable } from "@/app/admin/components/tables/PostTable";
 import {
 	getAdminPostsList,
 	getCategoriesForDropdown,

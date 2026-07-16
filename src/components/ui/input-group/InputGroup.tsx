@@ -4,9 +4,9 @@ import { cva, type VariantProps } from "class-variance-authority";
 import type * as React from "react";
 
 import { cn } from "@/lib/utils/utils";
-import { Button } from "../buttons/button";
-import { Input } from "./input";
-import { Textarea } from "./textarea";
+import { Button } from "../buttons/Button";
+import { Input } from "./Input";
+import { Textarea } from "./TextArea";
 
 // Fixed: Changed from a div to a fieldset to provide native group semantics
 function InputGroup({ className, ...props }: React.ComponentProps<"fieldset">) {

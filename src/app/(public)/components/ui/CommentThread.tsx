@@ -4,7 +4,7 @@ import { User } from "lucide-react";
 import { useState } from "react";
 import type { Comment } from "@/lib/types/post";
 import { cn } from "@/lib/utils/utils";
-import { CommentForm } from "./comment-form";
+import { CommentForm } from "./CommentForm";
 
 interface CommentThreadProps {
 	comment: Comment;

@@ -1,10 +1,10 @@
 "use client";
 
 import { MessageSquare } from "lucide-react";
-import { CommentForm } from "@/app/(public)/components/ui/comment-form";
-import { CommentThread } from "@/app/(public)/components/ui/comment-thread";
+import { CommentForm } from "@/app/(public)/components/ui/CommentForm";
+import { CommentThread } from "@/app/(public)/components/ui/CommentThread";
 import { useLazyLoad } from "@/app/hooks/useLazyLoad";
-import { LoadMoreButton } from "@/components/ui/buttons/load-more-button";
+import { LoadMoreButton } from "@/components/ui/buttons/LoadMoreButton";
 import { fetchMoreComments } from "@/lib/actions/comment";
 import type { Comment } from "@/lib/types/post";
 

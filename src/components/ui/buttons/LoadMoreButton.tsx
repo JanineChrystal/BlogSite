@@ -2,7 +2,7 @@
 
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils/utils";
-import { Button } from "./button";
+import { Button } from "./Button";
 
 interface LoadMoreButtonProps {
 	onClick?: () => void;

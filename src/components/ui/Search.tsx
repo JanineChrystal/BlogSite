@@ -8,7 +8,7 @@ import {
 	InputGroup,
 	InputGroupAddon,
 	InputGroupInput,
-} from "../input-group/input-group";
+} from "./input-group/InputGroup";
 
 type SearchResult = {
 	id: string;

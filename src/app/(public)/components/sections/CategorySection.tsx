@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useRef } from "react";
-import { PostCard } from "@/components/ui/cards/postCard";
+import { PostCard } from "@/components/ui/cards/PostCard";
 import { cn } from "@/lib/utils/utils";
 
 interface Post {

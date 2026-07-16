@@ -1,14 +1,14 @@
 "use client";
 
 import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/buttons/button";
+import { Button } from "@/components/ui/buttons/Button";
 import {
 	Sheet,
 	SheetContent,
 	SheetTitle,
 	SheetTrigger,
-} from "@/components/ui/sheet";
-import { SidebarContent } from "../layout/sidebar-content";
+} from "@/components/ui/Sheet";
+import { SidebarContent } from "../layout/SideBarContent";
 
 interface MobileHeaderProps {
 	isOpen: boolean;

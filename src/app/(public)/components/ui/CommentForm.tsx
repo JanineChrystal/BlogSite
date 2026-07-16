@@ -2,9 +2,9 @@
 
 import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
-import { Button } from "@/components/ui/buttons/button";
-import { Input } from "@/components/ui/input-group/input";
-import { Textarea } from "@/components/ui/input-group/textarea";
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/input-group/Input";
+import { Textarea } from "@/components/ui/input-group/TextArea";
 import { addComment } from "@/lib/actions/comment";
 import type { CommentFormState } from "@/lib/types/comment";
 import { cn } from "@/lib/utils/utils";

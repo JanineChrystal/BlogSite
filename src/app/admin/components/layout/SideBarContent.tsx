@@ -1,5 +1,5 @@
 import { BOTTOM_NAV_ITEMS, NAV_ITEMS } from "@/app/admin/constants/nav";
-import { SidebarNavItem } from "./sidebar-items";
+import { SidebarNavItem } from "./SideBarItems";
 
 interface SidebarContentProps {
 	onLogoutClick: () => void;

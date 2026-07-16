@@ -1,8 +1,8 @@
 import type { ContentBlock } from "@/lib/types/post";
-import { CalloutBlock } from "./callout-block";
-import { HeadingBlock } from "./heading-block";
-import { ParagraphBlock } from "./paragraph-block";
-import { QuoteBlock } from "./quote-block";
+import { CalloutBlock } from "./CallOutBlock";
+import { HeadingBlock } from "./HeadingBlock";
+import { ParagraphBlock } from "./ParagraphBlock";
+import { QuoteBlock } from "./QouteBlock";
 
 interface BlogBodyProps {
 	blocks: ContentBlock[];

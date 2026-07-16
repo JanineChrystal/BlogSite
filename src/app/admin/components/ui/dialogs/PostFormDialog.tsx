@@ -2,14 +2,14 @@
 
 import { useActionState, useEffect } from "react";
 import { usePostForm } from "@/app/hooks/usePostForm";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/Dialog";
 import {
 	type ActionState,
 	createPostAction,
 	updatePostAction,
 } from "@/lib/actions/post";
 
-import { ImageUpload } from "../../forms/image-upload";
+import { ImageUpload } from "../../forms/ImageUpload";
 
 export interface DialogPostItem {
 	id: string;

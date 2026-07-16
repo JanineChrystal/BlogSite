@@ -6,9 +6,9 @@ import {
 	getInitialPostCount,
 	getTagsByCategory,
 } from "@/lib/data";
-import { CategoryPostsSection } from "../../components/sections/category-posts-section";
-import type { Tag } from "../../components/sections/category-toolbar";
-import { HeroSection } from "../../components/sections/hero";
+import { CategoryPostsSection } from "../../components/sections/CategoryPostSection";
+import { HeroSection } from "../../components/sections/HeroSection";
+import type { Tag } from "../../components/ui/CategoryToolBar";
 import { CategoryPostsSectionSkeleton } from "./loading";
 
 interface CategoryPageProps {
