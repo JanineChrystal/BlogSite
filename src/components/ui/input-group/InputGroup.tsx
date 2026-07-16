@@ -6,7 +6,7 @@ import type * as React from "react";
 import { cn } from "@/lib/utils/utils";
 import { Button } from "../buttons/Button";
 import { Input } from "./Input";
-import { Textarea } from "./TextArea";
+import { Textarea } from "./tempTextArea";
 
 // Fixed: Changed from a div to a fieldset to provide native group semantics
 function InputGroup({ className, ...props }: React.ComponentProps<"fieldset">) {
