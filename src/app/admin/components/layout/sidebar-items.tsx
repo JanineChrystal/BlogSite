@@ -38,6 +38,7 @@ export function SidebarNavItem({
 				<button
 					type="button"
 					onClick={onLogoutClick}
+					suppressHydrationWarning
 					className={cn(rowClasses, "w-full text-left")}
 				>
 					<Icon className="size-5 shrink-0" aria-hidden />

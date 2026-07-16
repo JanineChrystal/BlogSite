@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLazyLoad } from "@/app/hooks/useLazyLoad";
 import { type SortColumn, usePostSort } from "@/app/hooks/usePostSort";
-import { Button } from "@/components/ui/buttons/button";
+import { LoadMoreButton } from "@/components/ui/buttons/load-more-button";
+import { fetchMoreAdminPosts } from "@/lib/actions/post";
 import { POST_TABLE_HEADERS } from "../../constants/table-headers";
 import { DeletePostButton } from "../ui/buttons/delete-button";
-import { CreatePostDialog } from "../ui/dialogs/create-post/create-post-dialog";
+import { EditPostButton } from "../ui/buttons/edit-button";
+import { PostDialog } from "../ui/dialogs/post-dialog";
 
 interface PostItem {
 	id: string;
@@ -14,6 +17,11 @@ interface PostItem {
 	status: string;
 	createdAt: Date;
 	categoryName: string | null;
+	categoryId: string;
+	body: string;
+	featuredLink?: string | null;
+	featuredImage?: string | null;
+	tags?: string | null;
 }
 
 interface PostsTableProps {
@@ -27,13 +35,23 @@ export function PostsTable({ initialData, categories }: PostsTableProps) {
 	const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 	const searchInputRef = useRef<HTMLInputElement>(null);
 
+	const { isFetching, hasMore, loadMore, newlyLoadedData } = useLazyLoad(
+		initialData.length,
+		fetchMoreAdminPosts,
+	);
+
+	const allPosts = [...initialData, ...newlyLoadedData];
+
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const [selectedPost, setSelectedPost] = useState<PostItem | null>(null);
+
 	useEffect(() => {
 		if (isSearchExpanded && searchInputRef.current) {
 			searchInputRef.current.focus();
 		}
 	}, [isSearchExpanded]);
 
-	const filteredPosts = initialData.filter((post) =>
+	const filteredPosts = allPosts.filter((post) =>
 		post.title.toLowerCase().includes(searchQuery.toLowerCase()),
 	);
 
@@ -53,6 +71,16 @@ export function PostsTable({ initialData, categories }: PostsTableProps) {
 				{sortDirection === "asc" ? "arrow_upward" : "arrow_downward"}
 			</span>
 		);
+	};
+
+	const handleCreateNew = () => {
+		setSelectedPost(null);
+		setIsDialogOpen(true);
+	};
+
+	const handleEditPost = (post: PostItem) => {
+		setSelectedPost(post);
+		setIsDialogOpen(true);
 	};
 
 	return (
@@ -107,7 +135,25 @@ export function PostsTable({ initialData, categories }: PostsTableProps) {
 					)}
 				</div>
 				<div className={isSearchExpanded ? "hidden sm:block" : "block"}>
-					<CreatePostDialog categories={categories} />
+					<div className={isSearchExpanded ? "hidden sm:block" : "block"}>
+						{/* Simple comment: The standalone create button */}
+						<button
+							type="button"
+							onClick={handleCreateNew}
+							className="bg-primary-container text-white p-3 md:px-6 md:py-3 rounded-DEFAULT font-label-sm text-label-sm uppercase tracking-wider hover:bg-inverse-primary transition-colors duration-300 shadow-[0_4px_14px_0_rgba(229,9,20,0.39)] hover:shadow-[0_6px_20px_rgba(229,9,20,0.23)] hover:scale-105 active:scale-95 flex items-center justify-center gap-2 shrink-0 outline-none"
+						>
+							<span className="material-symbols-outlined text-lg md:text-sm">
+								add
+							</span>
+							<span className="hidden md:inline">CREATE NEW POST</span>
+						</button>
+					</div>
+					<PostDialog
+						post={selectedPost}
+						categories={categories}
+						isOpen={isDialogOpen}
+						onClose={() => setIsDialogOpen(false)}
+					/>
 				</div>
 			</div>
 
@@ -146,6 +192,13 @@ export function PostsTable({ initialData, categories }: PostsTableProps) {
 							{sortedData.map((post) => (
 								<tr
 									key={post.id}
+									onClick={(e) => {
+										const target = e.target as HTMLElement;
+										if (target.closest("button") || target.closest("a")) {
+											return; // Stop the row from navigating!
+										}
+										window.open(`/blog-post/${post.slug}`, "_blank");
+									}}
 									className="hover:bg-white/2 transition-colors group"
 								>
 									<td className="py-5 px-6">
@@ -176,8 +229,11 @@ export function PostsTable({ initialData, categories }: PostsTableProps) {
 											</span>
 										)}
 									</td>
-									<td className="py-5 px-6 text-right">
-										<DeletePostButton postId={post.id} />
+									<td className="py-5 px-6 text-right onClick={(e) => e.stopPropagation()}">
+										<div className="flex items-center justify-end gap-2">
+											<EditPostButton onClick={() => handleEditPost(post)} />
+											<DeletePostButton postId={post.id} />
+										</div>
 									</td>
 								</tr>
 							))}
@@ -195,12 +251,14 @@ export function PostsTable({ initialData, categories }: PostsTableProps) {
 					</table>
 				</div>
 				<div className="border-t border-white/5 p-8 flex justify-center bg-[#131313]">
-					<Button
-						type="button"
-						className="px-8 py-3 rounded-DEFAULT border border-primary-container/30 bg-white/5 text-on-surface font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary-container hover:text-white transition-all duration-200 h-auto"
-					>
-						Load more...
-					</Button>
+					<LoadMoreButton
+						onClick={loadMore}
+						isLoading={isFetching}
+						hasMore={hasMore}
+						text="Load more posts..."
+						loadingText="Fetching posts..."
+						className="px-8 py-3 rounded-DEFAULT border border-primary-container/30 bg-white/5 text-on-surface font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary-container hover:text-white"
+					/>
 				</div>
 			</div>
 		</div>
