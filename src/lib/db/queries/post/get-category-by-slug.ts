@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { categories, posts } from "@/lib/db/schema";
 import type { Category } from "@/lib/types/post";
@@ -15,7 +15,10 @@ export async function getCategoryBySlug(
 
 	// Fetch the latest post in this category to get the hero image
 	const latestPost = await db.query.posts.findFirst({
-		where: eq(posts.categoryId, categoryData.categoryId),
+		where: and(
+			eq(posts.categoryId, categoryData.categoryId),
+			eq(posts.status, "published"),
+		),
 		orderBy: desc(posts.createdAt),
 		columns: {
 			featuredImage: true,

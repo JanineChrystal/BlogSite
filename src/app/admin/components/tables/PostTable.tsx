@@ -188,14 +188,13 @@ export function PostsTable({ initialData, categories }: PostsTableProps) {
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-white/5 font-body-md text-body-md">
-							{/* Simple comment: This MUST be sortedData so the table reacts to the column clicks! */}
 							{sortedData.map((post) => (
 								<tr
 									key={post.id}
 									onClick={(e) => {
 										const target = e.target as HTMLElement;
 										if (target.closest("button") || target.closest("a")) {
-											return; // Stop the row from navigating!
+											return;
 										}
 										window.open(`/blog-post/${post.slug}`, "_blank");
 									}}
@@ -209,7 +208,10 @@ export function PostsTable({ initialData, categories }: PostsTableProps) {
 									<td className="py-5 px-6 text-on-surface-variant">
 										{post.categoryName || "Uncategorized"}
 									</td>
-									<td className="py-5 px-6 text-on-surface-variant">
+									<td
+										suppressHydrationWarning
+										className="py-5 px-6 text-on-surface-variant"
+									>
 										{new Date(post.createdAt).toLocaleDateString("en-US", {
 											month: "short",
 											day: "2-digit",
@@ -229,7 +231,11 @@ export function PostsTable({ initialData, categories }: PostsTableProps) {
 											</span>
 										)}
 									</td>
-									<td className="py-5 px-6 text-right onClick={(e) => e.stopPropagation()}">
+									<td
+										className="py-5 px-6 text-right"
+										onClick={(e) => e.stopPropagation()}
+										onKeyDown={(e) => e.stopPropagation()}
+									>
 										<div className="flex items-center justify-end gap-2">
 											<EditPostButton onClick={() => handleEditPost(post)} />
 											<DeletePostButton postId={post.id} />

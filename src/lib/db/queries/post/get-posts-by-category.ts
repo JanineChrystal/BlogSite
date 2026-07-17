@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { categories, posts } from "@/lib/db/schema";
 import { resolveSortOrder } from "@/lib/helpers/resolve-sort-order";
@@ -23,7 +23,10 @@ export async function getPostsByCategory(
 	}
 
 	const all = await db.query.posts.findMany({
-		where: eq(posts.categoryId, category.categoryId),
+		where: and(
+			eq(posts.categoryId, category.categoryId),
+			eq(posts.status, "published"),
+		),
 		orderBy: resolveSortOrder(sort),
 		limit: pageSize + 1,
 		offset: (page - 1) * pageSize,

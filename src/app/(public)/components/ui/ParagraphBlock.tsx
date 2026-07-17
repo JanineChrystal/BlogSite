@@ -1,5 +1,3 @@
-import { cn } from "@/lib/utils/utils";
-
 interface ParagraphBlockProps {
 	text: string;
 	lead?: boolean;
@@ -7,11 +5,13 @@ interface ParagraphBlockProps {
 
 export function ParagraphBlock({ text, lead }: ParagraphBlockProps) {
 	return (
+		// Simple comment: Added whitespace-pre-wrap to respect line breaks and text-left to prevent justification stretching
 		<p
-			className={cn(
-				"font-body text-body-lg leading-relaxed text-secondary",
-				lead && "text-xl text-on-surface",
-			)}
+			className={`whitespace-pre-wrap text-left text-on-surface ${
+				lead
+					? "font-body-lg font-medium leading-relaxed"
+					: "font-body-md leading-relaxed"
+			}`}
 		>
 			{text}
 		</p>

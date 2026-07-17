@@ -49,5 +49,5 @@ export async function loginAction(
 		return { error: "An unexpected error occurred. Please try again." };
 	}
 
-	redirect("/admin/dashboard");
+	redirect("/admin/post-management");
 }
