@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { posts } from "@/lib/db/schema";
 import type { PaginatedPosts } from "@/lib/types/paginated";
@@ -11,7 +11,7 @@ export async function getAllPosts({
 	pageSize = DEFAULT_PAGE_SIZE,
 } = {}): Promise<PaginatedPosts> {
 	const all = await db.query.posts.findMany({
-		where: eq(posts.status, "published"),
+		where: and(eq(posts.status, "published"), isNull(posts.deletedAt)),
 		orderBy: desc(posts.createdAt),
 		limit: pageSize + 1,
 		offset: (page - 1) * pageSize,

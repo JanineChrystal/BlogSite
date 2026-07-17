@@ -26,9 +26,13 @@ export async function addReaction(
 	const { key, column } = REACTION_CONFIG[reactionId as ReactionId];
 
 	try {
+		// Update the reaction count and manually set the updatedAt timestamp for the post
 		await db
 			.update(posts)
-			.set({ [key]: sql`${column} + 1` })
+			.set({
+				[key]: sql`${column} + 1`,
+				updatedAt: new Date(),
+			})
 			.where(eq(posts.id, postId));
 
 		revalidatePath(`/blog-post/${slug}`);

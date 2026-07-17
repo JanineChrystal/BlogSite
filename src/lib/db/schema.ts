@@ -17,6 +17,10 @@ export const admin = pgTable("admin_table", {
 	passwordHash: varchar("password_hash", { length: 255 }),
 	themeMode: varchar("theme_mode", { length: 20 }),
 	accentColor: varchar("accent_color", { length: 20 }),
+	// Added audit timestamps
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+	deletedAt: timestamp("deleted_at"),
 });
 
 // Categories Table
@@ -24,6 +28,10 @@ export const categories = pgTable("categories_table", {
 	categoryId: uuid("category_id").primaryKey().defaultRandom(),
 	name: varchar("name", { length: 100 }).notNull(),
 	slug: varchar("slug", { length: 100 }).notNull().unique(),
+	// Added audit timestamps
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+	deletedAt: timestamp("deleted_at"),
 });
 
 // Posts Table
@@ -43,7 +51,11 @@ export const posts = pgTable("posts_table", {
 	featuredLink: text("featured_link"),
 	body: text("body").notNull(),
 
-	status: varchar("status", { length: 20 }).default("draft").notNull(),
+	// Enforced strict TypeScript values for the status column
+	status: varchar("status", { length: 20 })
+		.$type<"draft" | "published">()
+		.default("draft")
+		.notNull(),
 
 	views: integer("views").default(0).notNull(),
 	deepCount: integer("deep_count").default(0).notNull(),
@@ -51,14 +63,18 @@ export const posts = pgTable("posts_table", {
 	groundedCount: integer("grounded_count").default(0).notNull(),
 	coolCount: integer("cool_count").default(0).notNull(),
 	publishAt: timestamp("publish_at"),
+
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+	// Added deletedAt for soft deletions
+	deletedAt: timestamp("deleted_at"),
 });
 
 // Comments Table
 export const comments = pgTable("comments_table", {
 	id: uuid("comment_id").primaryKey().defaultRandom(),
 
+	// Note: onDelete cascade only fires on hard deletes, not when deletedAt is updated
 	postId: uuid("post_id")
 		.references(() => posts.id, { onDelete: "cascade" })
 		.notNull(),
@@ -68,7 +84,11 @@ export const comments = pgTable("comments_table", {
 	body: text("body").notNull(),
 	isAuthor: boolean("is_author").default(false).notNull(),
 	isApproved: boolean("is_approved").default(true).notNull(),
+
 	createdAt: timestamp("created_at").defaultNow().notNull(),
+	// Added updated and deleted timestamps for comments
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+	deletedAt: timestamp("deleted_at"),
 });
 
 // Tags Table
@@ -76,6 +96,10 @@ export const tags = pgTable("tags_table", {
 	tagId: uuid("tag_id").primaryKey().defaultRandom(),
 	name: varchar("name", { length: 255 }).notNull(),
 	slug: varchar("slug", { length: 50 }).notNull().unique(),
+	// Added audit timestamps
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull(),
+	deletedAt: timestamp("deleted_at"),
 });
 
 // Post-Tag Connection Table
@@ -89,10 +113,14 @@ export const postTags = pgTable(
 			.references(() => tags.tagId, { onDelete: "cascade" })
 			.notNull(),
 		slug: varchar("slug", { length: 50 }).unique().notNull(),
+		// Added audit timestamps for the join table
+		createdAt: timestamp("created_at").defaultNow().notNull(),
+		deletedAt: timestamp("deleted_at"),
 	},
 	(table) => ({ pk: primaryKey({ columns: [table.postId, table.tagId] }) }),
 );
 
+// Relations remain unchanged below
 export const adminRelations = relations(admin, ({ many }) => ({
 	posts: many(posts),
 }));

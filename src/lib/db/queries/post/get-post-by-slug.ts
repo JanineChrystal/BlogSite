@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { comments as commentsTable, posts } from "@/lib/db/schema";
 import type { Comment, ContentBlock, PostDetail } from "@/lib/types/post";
@@ -8,7 +8,7 @@ export async function getPostBySlug(
 	slug: string,
 ): Promise<PostDetail | undefined> {
 	const data = await db.query.posts.findFirst({
-		where: eq(posts.slug, slug),
+		where: and(eq(posts.slug, slug), isNull(posts.deletedAt)),
 		with: {
 			author: {
 				columns: {
@@ -22,6 +22,7 @@ export async function getPostBySlug(
 				},
 			},
 			comments: {
+				where: isNull(commentsTable.deletedAt),
 				orderBy: [desc(commentsTable.createdAt)],
 			},
 			postTags: {
