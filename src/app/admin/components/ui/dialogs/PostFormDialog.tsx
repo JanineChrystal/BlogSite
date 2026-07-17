@@ -1,0 +1,324 @@
+"use client";
+
+import { useActionState, useEffect } from "react";
+import { usePostForm } from "@/app/hooks/usePostForm";
+import { Dialog, DialogContent } from "@/components/ui/Dialog";
+import { createPostAction } from "@/lib/actions/post-management/create-post";
+import { updatePostAction } from "@/lib/actions/post-management/update-post";
+import type { PostActionState } from "@/lib/types/actions";
+import { ImageUpload } from "../../forms/ImageUpload";
+import { PublishButton } from "../buttons/PublishButton";
+
+export interface DialogPostItem {
+	id: string;
+	title: string;
+	slug: string;
+	categoryId: string;
+	body: string;
+	featuredLink?: string | null;
+	featuredImage?: string | null;
+	tags?: string | null;
+	status?: "draft" | "published";
+}
+
+interface PostDialogProps {
+	post: DialogPostItem | null;
+	categories: { categoryId: string; name: string }[];
+	isOpen: boolean;
+	onClose: () => void;
+}
+
+export function PostDialog({
+	post,
+	categories,
+	isOpen,
+	onClose,
+}: PostDialogProps) {
+	const { formData, handleChange } = usePostForm(post, isOpen);
+	const isEditMode = !!post;
+
+	const actionHandler = async (
+		prevState: PostActionState,
+		formData: FormData,
+	) => {
+		if (isEditMode) {
+			return updatePostAction(prevState, formData);
+		}
+		return createPostAction(prevState, formData);
+	};
+
+	const [state, formAction, isPending] = useActionState(actionHandler, {
+		errors: {},
+		success: false,
+	});
+
+	useEffect(() => {
+		if (state.success) {
+			alert(
+				isEditMode
+					? "Post updated successfully!"
+					: "Post published successfully!",
+			);
+			onClose();
+		}
+	}, [state.success, onClose, isEditMode]);
+
+	return (
+		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+			<DialogContent className="w-[calc(100%-2rem)] mx-auto sm:max-w-4xl md:max-w-6xl bg-[#0a0a0a] border border-surface-container-highest rounded-xl shadow-2xl p-0 gap-0 overflow-hidden flex flex-col max-h-[90vh]">
+				<div className="p-8 overflow-y-auto grow no-scrollbar">
+					<div className="mb-8 pb-6 border-b border-surface-container-highest">
+						<h2 className="font-headline-md text-headline-md text-white font-bold">
+							{isEditMode ? "Edit Post" : "Compose Your Narrative"}
+						</h2>
+						<p className="font-body-md text-body-md text-on-surface-variant mt-1">
+							{isEditMode
+								? "Update your content and modify your existing narrative."
+								: "Draft and publish your latest creation across your core sections."}
+						</p>
+					</div>
+
+					<form action={formAction} id="post-form" className="space-y-8">
+						{/* Pass the ID invisibly when updating an existing post */}
+						{isEditMode && <input type="hidden" name="id" value={post.id} />}
+
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+							<div className="space-y-2">
+								<label
+									htmlFor="title"
+									className="block font-label-sm text-label-sm text-on-surface-variant uppercase"
+								>
+									Post Title <span className="text-red-500">*</span>
+								</label>
+								<input
+									id="title"
+									name="title"
+									type="text"
+									required
+									value={formData.title}
+									onChange={handleChange}
+									className={`w-full bg-[#141414] border ${
+										state.errors?.title
+											? "border-red-500"
+											: "border-surface-container-highest"
+									} text-on-surface font-body-md py-3 px-4 rounded-DEFAULT focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none`}
+									placeholder="Enter a compelling headline..."
+								/>
+								{state.errors?.title && (
+									<p className="mt-1 text-sm text-red-500">
+										{state.errors.title.join(", ")}
+									</p>
+								)}
+							</div>
+							<div className="space-y-2">
+								<label
+									htmlFor="slug"
+									className="block font-label-sm text-label-sm text-on-surface-variant uppercase"
+								>
+									URL Slug <span className="text-red-500">*</span>
+								</label>
+								<div
+									className={`flex items-center bg-[#141414] rounded-DEFAULT border ${
+										state.errors?.slug
+											? "border-red-500"
+											: "border-surface-container-highest"
+									} focus-within:ring-1 focus-within:border-primary-container focus-within:ring-primary-container`}
+								>
+									<span className="pl-4 text-on-surface-variant font-body-md select-none">
+										/blog/
+									</span>
+									<input
+										id="slug"
+										name="slug"
+										type="text"
+										required
+										value={formData.slug}
+										onChange={handleChange}
+										className="w-full bg-transparent border-none text-on-surface font-body-md py-3 px-2 focus:ring-0 outline-none"
+										placeholder="my-awesome-post"
+									/>
+								</div>
+								{state.errors?.slug && (
+									<p className="mt-1 text-sm text-red-500">
+										{state.errors.slug.join(", ")}
+									</p>
+								)}
+							</div>
+						</div>
+
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+							<div className="space-y-2">
+								<label
+									htmlFor="categoryId"
+									className="block font-label-sm text-label-sm text-on-surface-variant uppercase"
+								>
+									Category <span className="text-red-500">*</span>
+								</label>
+								<select
+									id="categoryId"
+									name="categoryId"
+									required
+									value={formData.categoryId}
+									onChange={handleChange}
+									className={`w-full bg-[#141414] border ${
+										state.errors?.categoryId
+											? "border-red-500"
+											: "border-surface-container-highest"
+									} text-on-surface font-body-md py-3 px-4 rounded-DEFAULT focus:ring-1 focus:ring-primary-container focus:border-primary-container appearance-none outline-none`}
+								>
+									<option value="" disabled>
+										Select...
+									</option>
+									{categories.map((cat) => (
+										<option
+											key={cat.categoryId}
+											value={cat.categoryId}
+											className="bg-surface text-on-surface"
+										>
+											{cat.name}
+										</option>
+									))}
+								</select>
+								{state.errors?.categoryId && (
+									<p className="mt-1 text-sm text-red-500">
+										{state.errors.categoryId.join(", ")}
+									</p>
+								)}
+							</div>
+							<div className="space-y-2">
+								<label
+									htmlFor="featuredLink"
+									className="block font-label-sm text-label-sm text-on-surface-variant uppercase"
+								>
+									Primary Affiliate Link
+								</label>
+								<input
+									id="featuredLink"
+									name="featuredLink"
+									type="text"
+									value={formData.featuredLink}
+									onChange={handleChange}
+									className={`w-full bg-[#141414] border ${
+										state.errors?.featuredLink
+											? "border-red-500"
+											: "border-surface-container-highest"
+									} text-on-surface font-body-md py-3 px-4 rounded-DEFAULT focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none`}
+									placeholder="https://shopee.ph/..."
+								/>
+								{state.errors?.featuredLink && (
+									<p className="mt-1 text-sm text-red-500">
+										{state.errors.featuredLink.join(", ")}
+									</p>
+								)}
+							</div>
+						</div>
+
+						<div className="space-y-2">
+							<label
+								htmlFor="featuredImageInput"
+								className="block font-label-sm text-label-sm text-on-surface-variant uppercase"
+							>
+								Featured Image (.JPG / .PNG)
+							</label>
+							<ImageUpload defaultValue={formData.featuredImage} />
+							<input
+								type="hidden"
+								name="existingFeaturedImage"
+								value={formData.featuredImage || ""}
+							/>
+							{state.errors?.featuredImage && (
+								<p className="mt-1 text-sm text-red-500">
+									{state.errors.featuredImage.join(", ")}
+								</p>
+							)}
+						</div>
+
+						<div className="space-y-2">
+							<label
+								htmlFor="tags"
+								className="block font-label-sm text-label-sm text-on-surface-variant uppercase"
+							>
+								Tags (Comma Separated)
+							</label>
+							<input
+								id="tags"
+								name="tags"
+								type="text"
+								value={formData.tags}
+								onChange={handleChange}
+								className="w-full bg-[#141414] border border-surface-container-highest text-on-surface font-body-md py-3 px-4 rounded-DEFAULT focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none"
+								placeholder="tech, lifestyle, web development..."
+							/>
+							{state.errors?.tags && (
+								<p className="mt-1 text-sm text-red-500">
+									{state.errors.tags.join(", ")}
+								</p>
+							)}
+						</div>
+
+						<div className="space-y-2">
+							<div className="flex justify-between items-end mb-1">
+								<label
+									htmlFor="body"
+									className="block font-label-sm text-label-sm text-on-surface-variant uppercase"
+								>
+									Content (Markdown) <span className="text-red-500">*</span>
+								</label>
+							</div>
+							<textarea
+								id="body"
+								name="body"
+								required
+								rows={10}
+								value={formData.body}
+								onChange={handleChange}
+								className={`w-full bg-[#141414] border ${
+									state.errors?.body
+										? "border-red-500"
+										: "border-surface-container-highest"
+								} rounded-lg p-6 text-on-surface font-mono text-sm focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none transition-all resize-none h-64 md:h-96`}
+								placeholder="Write your story here..."
+							/>
+							{state.errors?.body && (
+								<p className="mt-1 text-sm text-red-500">
+									{state.errors.body.join(", ")}
+								</p>
+							)}
+						</div>
+
+						{state.errors?._form && (
+							<div className="rounded-md border border-red-500/50 bg-red-500/10 p-3 text-sm font-medium text-red-400">
+								{state.errors._form.join(", ")}
+							</div>
+						)}
+					</form>
+				</div>
+
+				<div className="p-8 border-t border-surface-container-highest flex justify-end flex-wrap gap-4 bg-[#0e0e0e]">
+					<button
+						type="button"
+						onClick={onClose}
+						className="px-4 md:px-6 py-3 font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant hover:text-white transition-colors"
+					>
+						Cancel
+					</button>
+
+					{!isEditMode && (
+						<button
+							type="submit"
+							form="post-form"
+							name="status"
+							value="draft"
+							disabled={isPending}
+							className="px-4 md:px-6 py-3 border border-on-surface text-on-surface rounded-DEFAULT font-label-sm text-label-sm uppercase tracking-wider hover:bg-on-surface hover:text-surface transition-all disabled:opacity-50"
+						>
+							Save Draft
+						</button>
+					)}
+
+					<PublishButton isPending={isPending} isEditMode={isEditMode} />
+				</div>
+			</DialogContent>
+		</Dialog>
+	);
+}
