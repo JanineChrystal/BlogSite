@@ -5,7 +5,7 @@ interface ParagraphBlockProps {
 
 export function ParagraphBlock({ text, lead }: ParagraphBlockProps) {
 	return (
-		// Simple comment: Added whitespace-pre-wrap to respect line breaks and text-left to prevent justification stretching
+		// Added whitespace-pre-wrap to respect line breaks and text-left to prevent justification stretching
 		<p
 			className={`whitespace-pre-wrap text-left text-on-surface ${
 				lead

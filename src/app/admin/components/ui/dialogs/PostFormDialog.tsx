@@ -18,6 +18,7 @@ export interface DialogPostItem {
 	featuredLink?: string | null;
 	featuredImage?: string | null;
 	tags?: string | null;
+	status?: "draft" | "published";
 }
 
 interface PostDialogProps {

@@ -30,6 +30,7 @@ export async function addComment(
 	}
 
 	try {
+		// Insert the comment; createdAt and updatedAt are handled by the database automatically
 		await db.insert(comments).values({
 			postId: result.data.postId,
 			authorName: result.data.authorName,

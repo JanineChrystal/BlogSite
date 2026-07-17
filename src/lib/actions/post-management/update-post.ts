@@ -50,6 +50,7 @@ export async function updatePostAction(
 			finalImageUrl = blob.url;
 		}
 
+		// Update the post including the status cast and the updatedAt timestamp
 		await db
 			.update(posts)
 			.set({
@@ -59,7 +60,7 @@ export async function updatePostAction(
 				featuredLink,
 				featuredImage: finalImageUrl,
 				body,
-				status,
+				status: status as "draft" | "published",
 				updatedAt: new Date(),
 			})
 			.where(eq(posts.id, id));
@@ -117,6 +118,7 @@ export async function updatePostAction(
 	} catch (err) {
 		console.error("Failed to update post:", err);
 		if (err instanceof Error) {
+			// Check for unique constraints on the slug
 			if (err.message.includes("unique")) {
 				return {
 					errors: { slug: ["A post with this slug already exists."] },

@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { categories, posts } from "@/lib/db/schema";
 import { resolveSortOrder } from "@/lib/helpers/resolve-sort-order";
@@ -14,7 +14,7 @@ export async function getPostsByCategory(
 	const { page = 1, pageSize = DEFAULT_PAGE_SIZE, sort = "newest" } = options;
 
 	const category = await db.query.categories.findFirst({
-		where: eq(categories.slug, slug),
+		where: and(eq(categories.slug, slug), isNull(categories.deletedAt)),
 		columns: { categoryId: true, name: true },
 	});
 
@@ -26,6 +26,7 @@ export async function getPostsByCategory(
 		where: and(
 			eq(posts.categoryId, category.categoryId),
 			eq(posts.status, "published"),
+			isNull(posts.deletedAt),
 		),
 		orderBy: resolveSortOrder(sort),
 		limit: pageSize + 1,

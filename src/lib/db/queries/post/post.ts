@@ -2,9 +2,11 @@ import { db } from "../../index";
 import { categories } from "../../schema";
 
 export async function getAdminPostsList() {
-	// Simple comment: Use the relational API to easily pull in the category and nested tags
+	// Use the relational API to easily pull in the category and nested tags
 	const allPosts = await db.query.posts.findMany({
 		orderBy: (posts, { desc }) => [desc(posts.createdAt)],
+		where: (posts, { isNull }) => isNull(posts.deletedAt),
+
 		with: {
 			category: true,
 			postTags: {
@@ -15,12 +17,15 @@ export async function getAdminPostsList() {
 		},
 	});
 
-	// Simple comment: Map the result to perfectly match the PostItem interface
+	// Map the result to perfectly match the PostItem interface
 	return allPosts.map((post) => ({
 		id: post.id,
 		title: post.title,
 		slug: post.slug,
-		status: post.status,
+
+		// Enforce the strict literal types for the frontend table
+		status: post.status as "draft" | "published",
+
 		createdAt: post.createdAt,
 		categoryId: post.categoryId,
 		categoryName: post.category?.name || "Uncategorized",
@@ -31,10 +36,8 @@ export async function getAdminPostsList() {
 	}));
 }
 
-/**
- * Helper to populate the "Select Category" dropdown inside the create modal.
- */
+// Helper to populate the "Select Category" dropdown inside the create modal.
 export async function getCategoriesForDropdown() {
-	// Simple comment: Fetches categories so we can assign a valid categoryId to new posts
+	// Fetches categories so we can assign a valid categoryId to new posts
 	return await db.select().from(categories);
 }

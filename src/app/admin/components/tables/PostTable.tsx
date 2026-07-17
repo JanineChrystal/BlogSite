@@ -14,7 +14,7 @@ interface PostItem {
 	id: string;
 	title: string;
 	slug: string;
-	status: string;
+	status: "draft" | "published";
 	createdAt: Date;
 	categoryName: string | null;
 	categoryId: string;
@@ -136,7 +136,7 @@ export function PostsTable({ initialData, categories }: PostsTableProps) {
 				</div>
 				<div className={isSearchExpanded ? "hidden sm:block" : "block"}>
 					<div className={isSearchExpanded ? "hidden sm:block" : "block"}>
-						{/* Simple comment: The standalone create button */}
+						{/* The standalone create button */}
 						<button
 							type="button"
 							onClick={handleCreateNew}

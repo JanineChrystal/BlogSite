@@ -85,6 +85,7 @@ export function ImageUpload({ defaultValue }: ImageUploadProps) {
 							src={previewUrl}
 							alt="Featured Preview"
 							fill
+							loading="eager"
 							className="object-contain"
 						/>
 						<div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity">
@@ -104,7 +105,7 @@ export function ImageUpload({ defaultValue }: ImageUploadProps) {
 								files
 							</p>
 							<p className="text-on-surface-variant font-body-sm">
-								Supports JPG, PNG up to 4MB
+								Supports JPG, PNG up to 1MB
 							</p>
 						</div>
 					</div>

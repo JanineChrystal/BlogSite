@@ -3,9 +3,7 @@
 import { cookies } from "next/headers";
 import { db } from "..";
 
-/**
- * Lazy loads a chunk of posts for the admin table.
- */
+// Lazy loads a chunk of posts for the admin table.
 export async function fetchMoreAdminPosts(
 	offsetAmount: number,
 	limitAmount: number = 10,
@@ -18,11 +16,12 @@ export async function fetchMoreAdminPosts(
 			throw new Error("Unauthorized access.");
 		}
 
-		// Fetch the next chunk by skipping the offsetAmount
+		// Fetch the next chunk by skipping the offsetAmount, while filtering out soft-deleted posts
 		const pagedPosts = await db.query.posts.findMany({
 			limit: limitAmount,
 			offset: offsetAmount,
 			orderBy: (posts, { desc }) => [desc(posts.createdAt)],
+			where: (posts, { isNull }) => isNull(posts.deletedAt),
 			with: {
 				category: true,
 				postTags: {
