@@ -4,9 +4,7 @@ import { CreateInlineCategorySchema } from "@/lib/schema/categorySchema";
 import { db } from "../../db";
 import { categories } from "../../db/schema";
 
-/**
- * Creates a new category inline from the post dialog.
- */
+// Creates a new category inline from the post dialog.
 export async function createInlineCategory(name: string) {
 	const result = CreateInlineCategorySchema.safeParse(name);
 
@@ -18,13 +16,13 @@ export async function createInlineCategory(name: string) {
 	}
 
 	try {
-		//  Automatically generate a URL-friendly slug from the category name
+		// Automatically generate a URL-friendly slug from the category name
 		const generatedSlug = name
 			.toLowerCase()
 			.replace(/[^a-z0-9]+/g, "-")
 			.replace(/(^-|-$)+/g, "");
 
-		// Insert both the name and the generated slug
+		// Insert the category; createdAt and updatedAt are handled by the database automatically
 		const [newCategory] = await db
 			.insert(categories)
 			.values({
@@ -32,7 +30,6 @@ export async function createInlineCategory(name: string) {
 				slug: generatedSlug,
 			})
 			.returning({
-				// Fixed this to use categoryId to match your exact Drizzle schema
 				categoryId: categories.categoryId,
 				name: categories.name,
 			});

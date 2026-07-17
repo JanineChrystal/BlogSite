@@ -76,7 +76,8 @@ export async function createPostAction(
 				body,
 				featuredImage: finalImageUrl,
 				featuredLink,
-				status,
+				// Cast status to strictly match the new Drizzle schema types
+				status: status as "draft" | "published",
 			})
 			.returning({ id: posts.id });
 
@@ -135,7 +136,7 @@ export async function createPostAction(
 
 		// Safely verifies that the thrown exception is an Error object
 		if (err instanceof Error) {
-			// Simple comment: Handles unique constraint errors gracefully
+			// Handles unique constraint errors gracefully
 			if (err.message.includes("unique")) {
 				return {
 					errors: { slug: ["A post with this slug already exists."] },
