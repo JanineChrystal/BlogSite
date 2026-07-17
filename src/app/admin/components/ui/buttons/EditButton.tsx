@@ -1,7 +1,6 @@
 "use client";
 
 interface EditPostButtonProps {
-	// Accept a function prop to trigger the dialog state from the parent table
 	onClick: () => void;
 }
 

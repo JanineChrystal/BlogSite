@@ -1,4 +1,3 @@
-// Simple comment: Location: src/app/admin/components/ui/dialogs/PostFormDialog.tsx
 "use client";
 
 import { useActionState, useEffect } from "react";
@@ -7,8 +6,8 @@ import { Dialog, DialogContent } from "@/components/ui/Dialog";
 import { createPostAction } from "@/lib/actions/post-management/create-post";
 import { updatePostAction } from "@/lib/actions/post-management/update-post";
 import type { PostActionState } from "@/lib/types/actions";
-
 import { ImageUpload } from "../../forms/ImageUpload";
+import { PublishButton } from "../buttons/PublishButton";
 
 export interface DialogPostItem {
 	id: string;
@@ -37,7 +36,6 @@ export function PostDialog({
 	const { formData, handleChange } = usePostForm(post, isOpen);
 	const isEditMode = !!post;
 
-	// Simple comment: Safely wrap the server action based on the current mode to satisfy React hook rules
 	const actionHandler = async (
 		prevState: PostActionState,
 		formData: FormData,
@@ -80,7 +78,7 @@ export function PostDialog({
 					</div>
 
 					<form action={formAction} id="post-form" className="space-y-8">
-						{/* Simple comment: Pass the ID invisibly when updating an existing post */}
+						{/* Pass the ID invisibly when updating an existing post */}
 						{isEditMode && <input type="hidden" name="id" value={post.id} />}
 
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -96,10 +94,8 @@ export function PostDialog({
 									name="title"
 									type="text"
 									required
-									// Simple comment: Replaced defaultValue with value from hook
 									value={formData.title}
 									onChange={handleChange}
-									// Simple comment: Add dynamic border color based on error state
 									className={`w-full bg-[#141414] border ${
 										state.errors?.title
 											? "border-red-500"
@@ -121,7 +117,6 @@ export function PostDialog({
 									URL Slug <span className="text-red-500">*</span>
 								</label>
 								<div
-									// Simple comment: Add dynamic border color based on error state
 									className={`flex items-center bg-[#141414] rounded-DEFAULT border ${
 										state.errors?.slug
 											? "border-red-500"
@@ -136,7 +131,6 @@ export function PostDialog({
 										name="slug"
 										type="text"
 										required
-										// Simple comment: Connected to hook
 										value={formData.slug}
 										onChange={handleChange}
 										className="w-full bg-transparent border-none text-on-surface font-body-md py-3 px-2 focus:ring-0 outline-none"
@@ -163,10 +157,8 @@ export function PostDialog({
 									id="categoryId"
 									name="categoryId"
 									required
-									// Simple comment: Connected to hook
 									value={formData.categoryId}
 									onChange={handleChange}
-									// Simple comment: Add dynamic border color based on error state
 									className={`w-full bg-[#141414] border ${
 										state.errors?.categoryId
 											? "border-red-500"
@@ -203,10 +195,8 @@ export function PostDialog({
 									id="featuredLink"
 									name="featuredLink"
 									type="text"
-									// Simple comment: Connected to hook
 									value={formData.featuredLink}
 									onChange={handleChange}
-									// Simple comment: Add dynamic border color based on error state
 									className={`w-full bg-[#141414] border ${
 										state.errors?.featuredLink
 											? "border-red-500"
@@ -279,10 +269,8 @@ export function PostDialog({
 								name="body"
 								required
 								rows={10}
-								// Simple comment: Connected to hook
 								value={formData.body}
 								onChange={handleChange}
-								// Simple comment: Add dynamic border color based on error state
 								className={`w-full bg-[#141414] border ${
 									state.errors?.body
 										? "border-red-500"
@@ -314,7 +302,6 @@ export function PostDialog({
 						Cancel
 					</button>
 
-					{/* Simple comment: Only show Save Draft if we are creating a brand new post */}
 					{!isEditMode && (
 						<button
 							type="submit"
@@ -328,22 +315,7 @@ export function PostDialog({
 						</button>
 					)}
 
-					<button
-						type="submit"
-						form="post-form"
-						name="status"
-						value="published"
-						disabled={isPending}
-						className="bg-primary-container text-white px-6 md:px-8 py-3 rounded-DEFAULT font-label-sm text-label-sm uppercase tracking-wider hover:bg-inverse-primary transition-all shadow-lg disabled:opacity-50"
-					>
-						{isPending
-							? isEditMode
-								? "Updating..."
-								: "Saving..."
-							: isEditMode
-								? "Update Post"
-								: "Publish Post"}
-					</button>
+					<PublishButton isPending={isPending} isEditMode={isEditMode} />
 				</div>
 			</DialogContent>
 		</Dialog>
