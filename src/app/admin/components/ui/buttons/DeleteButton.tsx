@@ -16,6 +16,7 @@ export function DeletePostButton({ postId }: DeletePostButtonProps) {
 	const handleConfirmDelete = () => {
 		startTransition(async () => {
 			await deletePostAction(postId);
+			setIsModalOpen(false);
 		});
 	};
 
@@ -34,11 +35,11 @@ export function DeletePostButton({ postId }: DeletePostButtonProps) {
 			</button>
 			<ConfirmModal
 				isOpen={isModalOpen}
-				onClose={() => setIsModalOpen(false)}
+				onClose={() => !isPending && setIsModalOpen(false)}
 				onConfirm={handleConfirmDelete}
 				title="Delete Post"
 				message="Are you sure you want to permanently delete this post?"
-				confirmText="Delete"
+				confirmText={isPending ? "Deleting..." : "Delete"}
 				cancelText="Cancel"
 			/>
 		</>
