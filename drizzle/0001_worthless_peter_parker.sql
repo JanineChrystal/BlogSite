@@ -1,1 +1,0 @@
-ALTER TABLE "post_tags_table" ADD CONSTRAINT "post_tags_table_slug_unique" UNIQUE("slug");

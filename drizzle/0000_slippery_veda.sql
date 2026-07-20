@@ -3,13 +3,19 @@ CREATE TABLE "admin_table" (
 	"username" varchar(50),
 	"password_hash" varchar(255),
 	"theme_mode" varchar(20),
-	"accent_color" varchar(20)
+	"accent_color" varchar(20),
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
 );
 --> statement-breakpoint
 CREATE TABLE "categories_table" (
 	"category_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" varchar(100) NOT NULL,
 	"slug" varchar(100) NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp,
 	CONSTRAINT "categories_table_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
@@ -21,14 +27,19 @@ CREATE TABLE "comments_table" (
 	"body" text NOT NULL,
 	"is_author" boolean DEFAULT false NOT NULL,
 	"is_approved" boolean DEFAULT true NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
 );
 --> statement-breakpoint
 CREATE TABLE "post_tags_table" (
 	"post_id" uuid NOT NULL,
 	"tag_id" uuid NOT NULL,
 	"slug" varchar(50) NOT NULL,
-	CONSTRAINT "post_tags_table_post_id_tag_id_pk" PRIMARY KEY("post_id","tag_id")
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp,
+	CONSTRAINT "post_tags_table_post_id_tag_id_pk" PRIMARY KEY("post_id","tag_id"),
+	CONSTRAINT "post_tags_table_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
 CREATE TABLE "posts_table" (
@@ -49,6 +60,7 @@ CREATE TABLE "posts_table" (
 	"publish_at" timestamp,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp,
 	CONSTRAINT "posts_table_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
@@ -56,6 +68,9 @@ CREATE TABLE "tags_table" (
 	"tag_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"slug" varchar(50) NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp,
 	CONSTRAINT "tags_table_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint

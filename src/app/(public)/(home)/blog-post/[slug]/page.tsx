@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+
 import { BlogBody } from "@/app/(public)/components/ui/BlogBody";
 import { ReactionPanel } from "@/app/(public)/components/ui/ReactionPanel";
 import { getPostBySlug } from "@/lib/db/queries/post/get-post-by-slug";
@@ -45,12 +47,15 @@ export default async function PostPage({ params }: PostPageProps) {
 						postId={post.id}
 						slug={slug}
 					/>
-					<CommentsSection
-						initialComments={post.comments}
-						commentCount={post.commentCount}
-						postId={post.id}
-						slug={slug}
-					/>
+					<Suspense
+						fallback={
+							<div className="py-10 text-center font-body text-secondary">
+								Loading comments...
+							</div>
+						}
+					>
+						<CommentsSection postId={post.id} slug={slug} />
+					</Suspense>
 				</article>
 			</div>
 		</div>

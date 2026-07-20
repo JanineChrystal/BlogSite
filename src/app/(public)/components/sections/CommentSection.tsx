@@ -1,32 +1,19 @@
-"use client";
-
 import { MessageSquare } from "lucide-react";
 import { CommentForm } from "@/app/(public)/components/ui/CommentForm";
 import { CommentThread } from "@/app/(public)/components/ui/CommentThread";
-import { useLazyLoad } from "@/app/hooks/useLazyLoad";
-import { LoadMoreButton } from "@/components/ui/buttons/LoadMoreButton";
 import { fetchMoreComments } from "@/lib/db/queries/comment/get-more-comment";
-import type { Comment } from "@/lib/types/post";
+import { LazyLoadedComments } from "../ui/LazyLoadedComments";
 
 interface CommentsSectionProps {
-	initialComments: Comment[];
-	commentCount: number;
 	postId: string;
 	slug: string;
 }
 
-export function CommentsSection({
-	initialComments,
-	commentCount,
-	postId,
-	slug,
-}: CommentsSectionProps) {
-	const { isFetching, hasMore, loadMore, newlyLoadedData } = useLazyLoad(
-		initialComments.length,
-		(offset) => fetchMoreComments(postId, offset),
-	);
+export async function CommentsSection({ postId, slug }: CommentsSectionProps) {
+	const initialComments = await fetchMoreComments(postId, 0);
 
-	const allComments = [...initialComments, ...newlyLoadedData];
+	// Get the count of the currently loaded comments
+	const commentCount = initialComments.length;
 
 	return (
 		<section className="mt-16 border-t border-surface-container-high pt-8">
@@ -35,8 +22,8 @@ export function CommentsSection({
 				Discussion ({commentCount})
 			</h3>
 			<CommentForm postId={postId} slug={slug} />
-			<div className="space-y-8">
-				{allComments.map((comment) => (
+			<div className="mt-10 space-y-8">
+				{initialComments.map((comment) => (
 					<CommentThread
 						key={comment.id}
 						comment={comment}
@@ -45,13 +32,10 @@ export function CommentsSection({
 					/>
 				))}
 			</div>
-			<LoadMoreButton
-				onClick={loadMore}
-				isLoading={isFetching}
-				hasMore={hasMore}
-				text="View more replies"
-				loadingText="Loading replies..."
-				className="px-4 py-2 text-body-sm font-body border-none text-on-surface-variant hover:text-primary-container hover:bg-transparent"
+			<LazyLoadedComments
+				postId={postId}
+				slug={slug}
+				initialCount={initialComments.length}
 			/>
 		</section>
 	);
