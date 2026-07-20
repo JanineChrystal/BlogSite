@@ -38,7 +38,10 @@ export default function RootLayout({
 					rel="stylesheet"
 				/>
 			</head>
-			<body className="relative min-h-screen flex flex-col m-0 p-0">
+			<body
+				className="relative min-h-screen flex flex-col m-0 p-0"
+				suppressHydrationWarning
+			>
 				{children}
 			</body>
 		</html>

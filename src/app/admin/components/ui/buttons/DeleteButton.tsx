@@ -28,6 +28,7 @@ export function DeletePostButton({ postId }: DeletePostButtonProps) {
 				disabled={isPending}
 				className="p-2 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-white/10 disabled:opacity-50 outline-none"
 				title="Delete Post"
+				suppressHydrationWarning
 			>
 				<span className="material-symbols-outlined text-[20px]">
 					{isPending ? "hourglass_empty" : "delete"}

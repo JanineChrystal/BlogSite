@@ -115,6 +115,7 @@ export function PostsTable({ initialData, categories }: PostsTableProps) {
 						onChange={(e) => setSearchQuery(e.target.value)}
 						className="w-full bg-[#141414] border-none text-on-surface pl-12 pr-12 py-3 rounded-DEFAULT focus:ring-0 focus:border-b-2 focus:border-b-primary-container transition-all placeholder:text-on-surface-variant/50 font-body-md text-body-md"
 						placeholder="Search posts..."
+						suppressHydrationWarning
 					/>
 
 					{/* Mobile Close Button - Allows user to collapse the search bar and clear the query */}
@@ -141,6 +142,7 @@ export function PostsTable({ initialData, categories }: PostsTableProps) {
 							type="button"
 							onClick={handleCreateNew}
 							className="bg-primary-container text-white p-3 md:px-6 md:py-3 rounded-DEFAULT font-label-sm text-label-sm uppercase tracking-wider hover:bg-inverse-primary transition-colors duration-300 shadow-[0_4px_14px_0_rgba(229,9,20,0.39)] hover:shadow-[0_6px_20px_rgba(229,9,20,0.23)] hover:scale-105 active:scale-95 flex items-center justify-center gap-2 shrink-0 outline-none"
+							suppressHydrationWarning
 						>
 							<span className="material-symbols-outlined text-lg md:text-sm">
 								add
@@ -176,6 +178,7 @@ export function PostsTable({ initialData, categories }: PostsTableProps) {
 													header.sortKey && handleSort(header.sortKey)
 												}
 												className="flex items-center gap-1 text-on-surface-variant hover:text-on-surface transition-colors group outline-none"
+												suppressHydrationWarning
 											>
 												{header.label}
 												{renderSortIcon(header.sortKey)}
